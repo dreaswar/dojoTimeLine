@@ -1,3 +1,7 @@
+#Ignore The Dojo Toolkit
+dojo1.8.3
+
+
 *.py[cod]
 
 # C extensions
