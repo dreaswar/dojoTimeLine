@@ -11,15 +11,22 @@ function(dom,
          domConstruct, 
          domStyle, 
          domAttr, 
-         domGeon, 
+         domGeom, 
          Win, on){
 
         var dojoTimeLineObj = new Object();
 
         dojoTimeLineObj.yearList   = [];
         dojoTimeLineObj.monthList  = [];
+        dojoTimeLineObj.verboseMonthList = ['January','February','March','April',
+                                            'May','June','July','August','September',
+                                            'October','November','December'
+                                          ]
         dojoTimeLineObj.dayList    = [];
-        dojoTimeLineObj.nonSelectedStyle = "margin:1px 5px 0px 5px ;padding:10px ;background:oldlace; border-radius: 3px 3px 0 0 ;box-shadow: 2px 2px 3px #aaa;"
+        dojoTimeLineObj.nonSelectedStyle = "margin:1px 5px 0px 5px ;\
+                                            padding:10px ;background:oldlace; \
+                                            border-radius: 3px 3px 0 0 ;\
+                                            box-shadow: 2px 2px 3px #aaa;"
         setTimeLineDateVars();
 
         function setTimeLineDateVars(){
@@ -43,7 +50,12 @@ function(dom,
 
         function setYearLine(){
           domConstruct.create('div',{id   : 'dojoTimeLineYearLine', 
-                                    style : "position:relative;top:80%; height:2em; font-family:helvetica,sans-serif,tahoma,ubuntu;"},'dojoTimeLine','first');
+                                    style : "position:absolute;top:80%; \
+                                             height:2em; \
+                                             font-family:helvetica,sans-serif,tahoma,ubuntu;\
+                                             display: inline-block;"
+                                    },
+                              'dojoTimeLine','first');
 
           for (var i=0; i < dojoTimeLineObj.yearList.length; i++ ){
 
@@ -85,10 +97,33 @@ function(dom,
                   domStyle.set(e.target,{background:'lightblue'});
                   dojoTimeLineObj.selectedYear = e.target;
                   if( !dom.byId('selectedYearDiv')){
-                  domConstruct.create('div',{id    : 'selectedYearDiv', 
-                                             style : 'width:auto; overflow-x: auto; height: 1em; margin: 1px 0px 0px 1px; padding: 2px; background: lightblue; box-shadow: -1px 2px 3px #aaa; text-align: center; vertical-align: middle; position:relative; left: 0px; '},'dojoTimeLineYearLine','before');
+                    var timeLineWidth = dom.byId('dojoTimeLine').scrollWidth.toString()+"px";
+                    console.log(timeLineWidth);
+                    domConstruct.create('div',{id    : 'selectedYearDiv', 
+                                               style : "width:"+timeLineWidth+"; white-space:nowrap; overflow-x: auto; height: 1em; \
+                                                        margin: 1px 0px 3px 1px; padding: 2px; \
+                                                        background: lightblue; box-shadow: -1px 2px 3px #aaa; \
+                                                        text-align: center; vertical-align: middle; \
+                                                        position:relative; top:59%; left: 0px; "
+                                              },
+                                       'dojoTimeLineYearLine','before');
                   }
+                  domStyle.set('dojoTimeLineYearLine',{display:'none'});
+                  domStyle.set('selectedYearDiv',{width: "99.4%",overflow:'hidden',display:'block'});
                   dom.byId('selectedYearDiv').innerHTML = e.target.innerHTML;
+                  domConstruct.create('img',{src    : 'static/images/arrow_down.png',
+                                             width  : '12px', 
+                                             alt    : 'Show Years',
+                                             title  : 'Show Years',
+                                             height : '12px',
+                                             margin : '2px',
+                                             id      : 'showYearLine'
+                                            },
+                                      'selectedYearDiv',
+                                      'last');
+                  on(dom.byId('showYearLine'),'click',function(e){ domStyle.set(dom.byId('dojoTimeLineYearLine'),{display:'block'}); 
+                                                                    domStyle.set(dom.byId('selectedYearDiv'),{display:'none'})
+                                                       })
                }
             );
 
