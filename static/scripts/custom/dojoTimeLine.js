@@ -239,12 +239,13 @@ function(dom,
                         }
                         domConstruct.create('div',
                                           {id    : 'dateContainer',
-                                           style : "height         : 0.3em;             \
-                                                    position       : relative;        \
-                                                    top            : 0px;             \
-                                                    text-align     : center;          \
-                                                    vertical-align : middle;          \
-                                                    "
+                                           style : "height         : 0.4em;          \
+                                                    position       : relative;       \
+                                                    top            : 0px;            \
+                                                    text-align     : center;         \
+                                                    vertical-align : middle;         \
+                                                    display        : inline-block;   \
+                                                   "
                                           },
                                           'dojoTimeLine',
                                           0
@@ -255,7 +256,7 @@ function(dom,
                                             {id        : 'dateContainer_'+i,
                                             class      : 'dateContainer',
                                             innerHTML  : i,
-                                            style      : "height         : 0.3em;            \
+                                            style      : "height         : 6em;              \
                                                           border-right   : solid 1px black;  \
                                                           margin         : 0px 5px 0px 5px;  \
                                                           padding        : 1em 3px 1em 3px;  \
@@ -263,6 +264,7 @@ function(dom,
                                                           white-space    : nowrap;           \
                                                           position       : relative;         \
                                                           top            : 0px;              \
+                                                          overflow-x     : auto;             \
                                                           "
                                             },
                                             'dateContainer',
@@ -309,6 +311,7 @@ function(dom,
                             domStyle.set(dom.byId('dojoTimeLineYearLine'),{display:'block'}); 
                             domStyle.set(dom.byId('selectedYearDiv'),{display:'none'});
                             domStyle.set(dom.byId('monthListDiv'),{display:'none'});
+                            domStyle.set(dom.byId('dateContainer'),{display:'none'});
                      }
                   );
 
