@@ -7,7 +7,8 @@ define(['dojo/dom'           ,
         'dojo/window'        ,
         'dojo/on'            ,
         'dojo/query'         ,
-       'dojo/_base/array'
+        'dojo/_base/array'   ,
+        'dojo/date'
 ],
 function(dom, 
          domConstruct, 
@@ -17,9 +18,9 @@ function(dom,
          Win, 
          on,
          query,
-         array){
+         array,
+         dojoDate){
 
-        
         String.prototype.capitalize = function() {
           return this.charAt(0).toUpperCase() + this.slice(1);
         }
@@ -217,15 +218,84 @@ function(dom,
                     on(query('.monthDiv'),
                        'click',
                        function(e){
-                         dojoTimeLineObj.selectedMonth = e.target;
-                         setInactiveMonthStyle();
-                         domStyle.set( dom.byId(e.target),{background:'navy',color: 'white'});
+                        dojoTimeLineObj.selectedMonth = e.target;
 
-                         function daysInAMonth(month, year){
-                            return new Date(month,year,0);
-                         }
+                        setInactiveMonthStyle();
+                        domStyle.set( dom.byId(e.target),{background:'navy',color: 'white'});
 
-                       }
+                        var year  = dojoTimeLineObj.selectedYear.innerHTML;
+                        var month = array.indexOf(dojoTimeLineObj.verboseMonthList, 
+                                                   dojoTimeLineObj.selectedMonth.innerHTML.capitalize()
+                                                  );
+                        year  = Number(year);
+                        month = Number(month)
+                        var daysInMonth = dojoDate.getDaysInMonth(new Date(year,month,1));
+
+                        dojoTimeLineObj.year = year;
+                        dojoTimeLineObj.month = month;
+
+                        if(dom.byId('dateContainer')){
+                          domConstruct.destroy('dateContainer');
+                        }
+                        domConstruct.create('div',
+                                          {id    : 'dateContainer',
+                                           style : "height         : 0.3em;             \
+                                                    position       : relative;        \
+                                                    top            : 0px;             \
+                                                    text-align     : center;          \
+                                                    vertical-align : middle;          \
+                                                    "
+                                          },
+                                          'dojoTimeLine',
+                                          0
+                        );
+
+                        for(var i=1; i <= Number(daysInMonth); i++){
+                          domConstruct.create('div',
+                                            {id        : 'dateContainer_'+i,
+                                            class      : 'dateContainer',
+                                            innerHTML  : i,
+                                            style      : "height         : 0.3em;            \
+                                                          border-right   : solid 1px black;  \
+                                                          margin         : 0px 5px 0px 5px;  \
+                                                          padding        : 1em 3px 1em 3px;  \
+                                                          display        : inline-block;     \
+                                                          white-space    : nowrap;           \
+                                                          position       : relative;         \
+                                                          top            : 0px;              \
+                                                          "
+                                            },
+                                            'dateContainer',
+                                            'last'
+                          );
+
+                          on(query('dateContainer'), 
+                             'click', 
+                             function(e){
+
+                               var day             = Number(e.target.innerHTML);
+                               dojoTimeLineObj.selectedDay = e.target;
+                               dojoTimeLineObj.day = day;
+
+                               var chosenDate      = new Date(dojoTimeLineObj.year, dojoTimeLineObj.month,dojoTimeLineObj.day);
+                               dojoTimeLineObj.date = chosenDate;
+
+                               if(!dom.byId('chosenDate')){
+                                  domConstruct.create('div',
+                                                    {id       : 'chosenDate',
+                                                    innerHTML : chosenDate
+                                                    },
+                                                    'dojoTimeLine',
+                                                    'after'
+                                  );
+                               }else{
+                                  dom.byId('chosenDate').innerHTML = chosenDate;
+                               }
+                             }
+                          );
+
+                        }
+                      }
                     );
                   }else{
                     domStyle.set(dom.byId('monthListDiv'),{display:'block'});
