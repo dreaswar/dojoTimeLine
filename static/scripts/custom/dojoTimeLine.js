@@ -76,7 +76,11 @@ function(dom,
                                         top        : 80%;     \
                                         height     : 2em;     \
                                         font-family: Helvetica,Sans-serif,Tahoma,Ubuntu;\
-                                        display    : inline-block;"
+                                        display    : inline-block; \
+                                        white-space: nowrap;       \
+                                        overflow-x : auto;         \
+                                        overflow-y : hidden;       \
+                                        "
                               },
                               'dojoTimeLine','first');
 
@@ -128,9 +132,10 @@ function(dom,
                     console.log(timeLineWidth);
                     domConstruct.create('div',
                                         {id    : 'selectedYearDiv', 
-                                         style : "width          :"+timeLineWidth+"; \
-                                                  white-space    : nowrap;           \
+                                         style : "white-space    : nowrap;           \
                                                   overflow-x     : auto;             \
+                                                  overflow-y     : hidden;           \
+                                                  display        : inline-block      \
                                                   height         : 1em;              \
                                                   margin         : 1px 0px 3px 1px;  \
                                                   padding        : 2px;              \
@@ -140,6 +145,7 @@ function(dom,
                                                   vertical-align : middle;           \
                                                   position       : relative;         \
                                                   top            : 75%;              \
+                                                  opacity        : 0.7;              \
                                                   left           : 0px; "
                                         },
                                        'dojoTimeLineYearLine','before');
@@ -166,8 +172,7 @@ function(dom,
 
                     domConstruct.create('div',
                                         {id    : 'monthListDiv', 
-                                         style : "width           : auto;              \
-                                                  height          : 0.9em;             \
+                                         style : "height          : 0.9em;             \
                                                   margin          : 1px 0px 1px 0px;   \
                                                   padding         : 1px;               \
                                                   background      : lightblue;         \
@@ -176,6 +181,11 @@ function(dom,
                                                   vertical-align  : middle;            \
                                                   position        : relative;          \
                                                   top             : 72%;               \
+                                                  white-space     : nowrap;            \
+                                                  opacity         : .7 ;               \
+                                                  display         : inline-block       \
+                                                  overflow-x      : auto;              \
+                                                  overflow-y      : hidden;            \
                                                   left            : 0px; "
                                         },
                                        'selectedYearDiv',
@@ -192,9 +202,6 @@ function(dom,
                                                   padding        : 1px;             \
                                                   text-align     : center;          \
                                                   vertical-align : middle;          \
-                                                  border-right   : solid 1px black; \
-                                                  display        : inline-block;    \
-                                                  white-space    : nowrap;          \
                                                   font-family    : Helvetica,sans-serif, Tahoma, Ubuntu; \
                                                   font-size      : 10px;",
                                          innerHTML : month
@@ -209,7 +216,8 @@ function(dom,
                                           domStyle.set(div,
                                                        {background  : 'lightblue',
                                                         color       : 'black', 
-                                                        display     : 'inline-block'
+                                                        display     : 'inline-block',
+                                                        whiteSpace  : 'nowrap'
                                                       }
                                           )
                                         });
@@ -239,13 +247,18 @@ function(dom,
                         }
                         domConstruct.create('div',
                                           {id    : 'dateContainer',
-                                           style : "height         : 0.4em;          \
+                                           style : "height         : 10em;           \
                                                     position       : relative;       \
                                                     top            : 0px;            \
                                                     text-align     : center;         \
                                                     vertical-align : middle;         \
-                                                    display        : inline-block;   \
-                                                   "
+                                                    display        : block;          \
+                                                    overflow-x     : auto;           \
+                                                    overflow-y     : hidden;         \
+                                                    margin         : 0 0 -10.8em 0;  \
+                                                    white-space    : nowrap  ;       \
+                                                    background     : white   ;       \
+                                                    "
                                           },
                                           'dojoTimeLine',
                                           0
@@ -256,10 +269,14 @@ function(dom,
                                             {id        : 'dateContainer_'+i,
                                             class      : 'dateContainer',
                                             innerHTML  : i,
-                                            style      : "height         : 6em;              \
-                                                          border-right   : solid 1px black;  \
-                                                          margin         : 0px 5px 0px 5px;  \
-                                                          padding        : 1em 3px 1em 3px;  \
+                                            style      : "height         : 8em;              \
+                                                          width          : 1.2em;            \
+                                                          border-right   : solid 1px #ddd;   \
+                                                          margin         : 0px -2px 0px 2px; \
+                                                          padding        : 5.35em 2px 1.1em 2px;\
+                                                          font-family    : Helvetica,Sans-serif,Tahoma,Ubuntu;\
+                                                          font-size      : 1em;              \
+                                                          color          : #aaa;             \
                                                           display        : inline-block;     \
                                                           white-space    : nowrap;           \
                                                           position       : relative;         \
@@ -271,21 +288,38 @@ function(dom,
                                             'last'
                           );
 
-                          on(query('dateContainer'), 
+                          on(query('.dateContainer'), 
                              'click', 
                              function(e){
 
                                var day             = Number(e.target.innerHTML);
                                dojoTimeLineObj.selectedDay = e.target;
                                dojoTimeLineObj.day = day;
+                               
+                               array.forEach(query('.dateContainer'),
+                                             function(div){
+                                               domStyle.set(div,{background:'white'});
+                                            });
 
-                               var chosenDate      = new Date(dojoTimeLineObj.year, dojoTimeLineObj.month,dojoTimeLineObj.day);
+                               domStyle.set(e.target,{background:'#FEDEDE'});
+
+                               var chosenDate       = new Date(dojoTimeLineObj.year, dojoTimeLineObj.month,dojoTimeLineObj.day);
                                dojoTimeLineObj.date = chosenDate;
 
                                if(!dom.byId('chosenDate')){
                                   domConstruct.create('div',
                                                     {id       : 'chosenDate',
-                                                    innerHTML : chosenDate
+                                                    innerHTML : chosenDate,
+                                                    style     : 'margin      : 5px;       \
+                                                                 width       : 40em;      \
+                                                                 position    : relative;  \
+                                                                 top         : -2em;       \
+                                                                 left        : 2em;       \
+                                                                 font-family : Helvetica,Sans-serif,Tahoma,Ubuntu;\
+                                                                 font-size   : 12px;                              \
+                                                                 color       : navy;                              \
+                                                                 display     : block;                             \
+                                                                '
                                                     },
                                                     'dojoTimeLine',
                                                     'after'
@@ -312,6 +346,7 @@ function(dom,
                             domStyle.set(dom.byId('selectedYearDiv'),{display:'none'});
                             domStyle.set(dom.byId('monthListDiv'),{display:'none'});
                             domStyle.set(dom.byId('dateContainer'),{display:'none'});
+                            domStyle.set(dom.byId('chosenDate'),{display:'none'});
                      }
                   );
 
