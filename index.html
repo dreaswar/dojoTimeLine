@@ -44,11 +44,12 @@
               });
           </script>
 
+<!-- 
+    #FIXME Messes up the dojoTimeLine css .....
 
-            <style type="text/css">
-                @import "./static/scripts/libs/dojo1.8.3/dojo/resources/dojo.css";
-                @import "./static/scripts/libs/dojo1.8.3/dijit/themes/claro/claro.css";
-            </style>
+      <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dojo/resources/dojo.css"/>
+      <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dijit/themes/claro/claro.css"/>
+-->
 
            <style type="text/css">
 
@@ -65,8 +66,8 @@
               border        : solid 1px navy;
               border-radius : 3px;
               background    : white;
-              position      : relative;
-              top           : 5px;
+              position      : absolute;
+              top           : 55%;
               left          : 5%;
               width         : 85%;
               height        : 10em;
@@ -74,6 +75,7 @@
               overflow-x    : auto;
               cursor        : pointer;
               margin-bottom : 2%;
+              margin-left   : 2%;
             }
 
            </style>
@@ -81,7 +83,16 @@
   </head>
 
   <body id="claro">
+    <!-- 
     
+    #FIXME
+    
+    Messes up the CSS of the dojoTimeLine div and innner divs... 
+    Needs a better solution if this dosent display well inside of a Dijit Layout. 
+    
+    Incase this works, put the dojoTimeLine DIV inside the dojoTimeLineContainer DIV 
+    as the first child
+
     <div id             = "appBorderContainer" 
          data-dojo-type = "dijit/layout/BorderContainer" 
          style          = "height:100%; width:100%;">
@@ -95,13 +106,15 @@
     <div id              = "dojoTimeLineContainer" 
          data-dojo-type  = "dojox/layout/ContentPane" 
          data-dojo-props = "region:'bottom',splitter:true"
-         style           = 'width:95%; height:10em;'>
+         style           = 'width:100%; height:20em; margin-bottom:10px;'>
       
-      <div id="dojoTimeLine" >
-
-      </div>
-    
     </div>
+    -->
+
+    <div id="dojoTimeLine" >
+
+    </div>
+
 
   </body>
 
