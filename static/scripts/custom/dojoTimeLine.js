@@ -8,7 +8,8 @@ define(['dojo/dom'           ,
         'dojo/on'            ,
         'dojo/query'         ,
         'dojo/_base/array'   ,
-        'dojo/date'
+        'dojo/date'          ,
+        'dojoTimeLine/dojoTimeLineAnim'
 ],
 function(dom, 
          domConstruct, 
@@ -45,9 +46,8 @@ function(dom,
         dojoTimeLineObj.dayList    = [];
         dojoTimeLineObj.nonSelectedStyle = "margin        : 1px 5px 0px 5px ;\
                                             padding       : 10px ;           \
-                                            background    : oldlace;         \
-                                            border-radius : 3px 3px 0 0 ;    \
-                                            box-shadow    : 2px 2px 3px #aaa;"
+                                            background    : lightblue;       \
+                                            border        : 0px 1px 0px 1px; "
         setTimeLineDateVars();
 
         function setTimeLineDateVars(){
@@ -109,7 +109,7 @@ function(dom,
                'mouseout', 
                function(e){ 
                   if(e.target != dojoTimeLineObj.selectedYear){
-                    domStyle.set(e.target,{background:'oldlace'});
+                    domStyle.set(e.target,{background:'lightblue'});
                   }
                }
             );
@@ -295,13 +295,15 @@ function(dom,
                                var day             = Number(e.target.innerHTML);
                                dojoTimeLineObj.selectedDay = e.target;
                                dojoTimeLineObj.day = day;
-                               
+
                                array.forEach(query('.dateContainer'),
                                              function(div){
                                                domStyle.set(div,{background:'white'});
                                             });
 
                                domStyle.set(e.target,{background:'#FEDEDE'});
+
+                               animateOnSelectDate(e.target);
 
                                var chosenDate       = new Date(dojoTimeLineObj.year, dojoTimeLineObj.month,dojoTimeLineObj.day);
                                dojoTimeLineObj.date = chosenDate;
