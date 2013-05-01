@@ -9,6 +9,7 @@ define(['dojo/dom'           ,
         'dojo/query'         ,
         'dojo/_base/array'   ,
         'dojo/date'          ,
+        'dojo/ready'         ,
         'dojoTimeLine/dojoTimeLineAnim'
 ],
 function(dom, 
@@ -20,12 +21,17 @@ function(dom,
          on,
          query,
          array,
-         dojoDate){
+         dojoDate,
+         ready){
 
         String.prototype.capitalize = function() {
           return this.charAt(0).toUpperCase() + this.slice(1);
         }
   
+        ready(function(){
+          domStyle.set(dom.byId('dojoTimeLine'), {display:'block'});
+        });
+
         var dojoTimeLineObj = new Object();
 
         dojoTimeLineObj.yearList   = [];
@@ -73,13 +79,17 @@ function(dom,
           domConstruct.create('div',
                               {id    : 'dojoTimeLineYearLine', 
                                style : "position   : absolute;\
-                                        top        : 80%;     \
+                                        top        : 76%;     \
                                         height     : 2em;     \
                                         font-family: Helvetica,Sans-serif,Tahoma,Ubuntu;\
                                         display    : inline-block; \
                                         white-space: nowrap;       \
                                         overflow-x : auto;         \
                                         overflow-y : hidden;       \
+                                        background : lightblue;    \
+                                        box-shadow : 0px 2px 2px #aaa;\
+                                        opacity    : 0.85;\
+                                        margin-bottom: 5px;\
                                         "
                               },
                               'dojoTimeLine','first');
@@ -152,7 +162,8 @@ function(dom,
                   }
 
 
-                  domStyle.set('dojoTimeLineYearLine',{display:'none'});
+                  domStyle.set('dojoTimeLineYearLine',{display   : 'none'});
+                  domStyle.set('dojoTimeLine',{overflowX : 'hidden'});
                   domStyle.set('selectedYearDiv',{width: "99.4%",overflow:'hidden',display:'block'});
 
                   dom.byId('selectedYearDiv').innerHTML = e.target.innerHTML;
@@ -167,6 +178,18 @@ function(dom,
                                       'selectedYearDiv',
                                       'last');                  
 
+                    function setInactiveMonthStyle(){
+                      array.forEach(query('.monthDiv'),
+                                        function(div){ 
+                                          domStyle.set(div,
+                                                       {background  : 'lightblue',
+                                                        color       : 'black', 
+                                                        display     : 'inline-block',
+                                                        whiteSpace  : 'nowrap'
+                                                      }
+                                          )
+                                        });
+                    }
 
                   if( !dom.byId('monthListDiv') ){
 
@@ -174,7 +197,7 @@ function(dom,
                                         {id    : 'monthListDiv', 
                                          style : "height          : 0.9em;             \
                                                   margin          : 1px 0px 1px 0px;   \
-                                                  padding         : 1px;               \
+                                                  padding         : 0px 0px 6px 0px;   \
                                                   background      : lightblue;         \
                                                   box-shadow      : -1px 2px 3px #aaa; \
                                                   text-align      : center;            \
@@ -208,19 +231,6 @@ function(dom,
                                         },
                                        'monthListDiv',
                                        'last');
-                    }
-
-                    function setInactiveMonthStyle(){
-                      array.forEach(query('.monthDiv'),
-                                        function(div){ 
-                                          domStyle.set(div,
-                                                       {background  : 'lightblue',
-                                                        color       : 'black', 
-                                                        display     : 'inline-block',
-                                                        whiteSpace  : 'nowrap'
-                                                      }
-                                          )
-                                        });
                     }
 
                     on(query('.monthDiv'),
@@ -312,15 +322,15 @@ function(dom,
                                   domConstruct.create('div',
                                                     {id       : 'chosenDate',
                                                     innerHTML : chosenDate,
-                                                    style     : 'margin      : 5px;       \
-                                                                 width       : 40em;      \
+                                                    style     : 'margin      : 1px;       \
+                                                                 width       : 500px;      \
                                                                  position    : relative;  \
-                                                                 top         : -2em;       \
-                                                                 left        : 2em;       \
+                                                                 top         : 10px;       \
+                                                                 left        : 0em;       \
                                                                  font-family : Helvetica,Sans-serif,Tahoma,Ubuntu;\
                                                                  font-size   : 12px;                              \
-                                                                 color       : navy;                              \
-                                                                 display     : block;                             \
+                                                                 color       : #aaa;                              \
+                                                                 display     : none;                      \
                                                                 '
                                                     },
                                                     'dojoTimeLine',
@@ -345,6 +355,7 @@ function(dom,
                       'click',
                       function(e){ 
                             domStyle.set(dom.byId('dojoTimeLineYearLine'),{display:'block'}); 
+                            domStyle.set(dom.byId('dojoTimeLineYearLine'),{overflowX:'auto'});
                             domStyle.set(dom.byId('selectedYearDiv'),{display:'none'});
                             domStyle.set(dom.byId('monthListDiv'),{display:'none'});
                             domStyle.set(dom.byId('dateContainer'),{display:'none'});

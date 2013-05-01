@@ -42,6 +42,7 @@ function animateOnSelectDate(e){
                                      overflow-x  : hidden;  \
                                      overflow-y  : hidden;  \
                                      font-family : Helvetica,Sans-serif,Tahoma,Ubuntu\
+                                     color       : #aaa;    \
                                     '
                         },
                         'dateContainer',

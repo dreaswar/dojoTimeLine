@@ -30,12 +30,25 @@
           <script type="text/javascript">
               require(["dojoTimeLine/dojoTimeLine", 
                        "dojo/parser", 
+
+                       "dijit/layout/BorderContainer", 
+                       "dijit/layout/TabContainer", 
+                       "dijit/layout/AccordionContainer", 
+                       "dijit/layout/ContentPane", 
+                       "dijit/layout/AccordionPane",
+
                        'dojo/domReady!'],
               function(dojoTimeLine, parser){
                 //Runs the dojoTimeLine....
                 console.log(dojoTimeLine);
               });
           </script>
+
+
+            <style type="text/css">
+                @import "./static/scripts/libs/dojo1.8.3/dojo/resources/dojo.css";
+                @import "./static/scripts/libs/dojo1.8.3/dijit/themes/claro/claro.css";
+            </style>
 
            <style type="text/css">
 
@@ -48,17 +61,19 @@
             }
 
             #dojoTimeLine{
+              display       : none;
               border        : solid 1px navy;
               border-radius : 3px;
               background    : white;
               position      : relative;
-              top           : 40%;
+              top           : 5px;
               left          : 5%;
-              max-width     : 90%;
+              width         : 85%;
               height        : 10em;
               overflow-y    : hidden;
               overflow-x    : auto;
-              cursor        : pointer;           
+              cursor        : pointer;
+              margin-bottom : 2%;
             }
 
            </style>
@@ -66,8 +81,26 @@
   </head>
 
   <body id="claro">
-    <div id="dojoTimeLine">
+    
+    <div id             = "appBorderContainer" 
+         data-dojo-type = "dijit/layout/BorderContainer" 
+         style          = "height:100%; width:100%;">
+    
+    <div id              = "appCenterPane" 
+         data-dojo-type  = "dojox/layout/ContentPane" 
+         data-dojo-props = "region:'center',splitter:true">
 
+    </div>
+    
+    <div id              = "dojoTimeLineContainer" 
+         data-dojo-type  = "dojox/layout/ContentPane" 
+         data-dojo-props = "region:'bottom',splitter:true"
+         style           = 'width:95%; height:10em;'>
+      
+      <div id="dojoTimeLine" >
+
+      </div>
+    
     </div>
 
   </body>
