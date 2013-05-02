@@ -6,6 +6,60 @@
           <meta charset="utf-8">
           <title>Dojo Timeline</title>
 
+
+        <!-- #FIXME Messes up the dojoTimeLine css .....-->
+        <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dojo/resources/dojo.css"/>
+        <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dijit/themes/claro/claro.css"/>
+
+
+        <style type="text/css">
+
+          html, body{
+            width       : 100%;
+            height      : 100%;
+            margin      : 0;
+            padding     : 0;
+            font-family : Helvetica,Sans-serif,Tahoma,Ubuntu;
+          }
+
+          #dojoTimeLineWidgetContainer,
+          #dojoTimeLine{
+            border        : solid 1px navy;
+            border-radius : 3px;
+            background    : white;
+            width         : 85%;
+            min-height    : 10em;
+            overflow-y    : hidden;
+            overflow-x    : auto;
+            cursor        : pointer;
+            margin-bottom : 2%;
+            margin-left   : 2%;
+          }
+
+          #dojoTimeLineWidget_0{
+            background    : white;
+            min-height    : 10em;
+            overflow-y    : hidden;
+            overflow-x    : auto;
+            cursor        : pointer;
+          }
+
+          
+          #dojoTimeLine{
+            display       : none;
+            position      : absolute;
+            top           : 55%;
+            left          : 5%;            
+          }
+
+          #dojoTimeLineWidgetContainer{
+            position      : absolute;
+            top           : 15%;
+            left          : 5%;            
+          }
+
+        </style>
+
           <script type="text/javascript">
               var dojoConfig= {
                   parseOnLoad      : true,
@@ -28,7 +82,8 @@
           </script>
 
           <script type="text/javascript">
-              require(["dojoTimeLine/dojoTimeLine", 
+              require(["dojoTimeLine/dojoTimeLine",
+                       "dojoTimeLine/dojoTimeLineWidget", 
                        "dojo/parser", 
 
                        "dijit/layout/BorderContainer", 
@@ -38,47 +93,13 @@
                        "dijit/layout/AccordionPane",
 
                        'dojo/domReady!'],
-              function(dojoTimeLine, parser){
+              function(dojoTimeLine, dojoTimeLineWidget, parser){
                 //Runs the dojoTimeLine....
                 console.log(dojoTimeLine);
+                
+                
               });
           </script>
-
-<!-- 
-    #FIXME Messes up the dojoTimeLine css .....
-
-      <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dojo/resources/dojo.css"/>
-      <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dijit/themes/claro/claro.css"/>
--->
-
-           <style type="text/css">
-
-            html, body{
-              width       : 100%;
-              height      : 100%;
-              margin      : 0;
-              padding     : 0;
-              font-family : Helvetica,Sans-serif,Tahoma,Ubuntu;
-            }
-
-            #dojoTimeLine{
-              display       : none;
-              border        : solid 1px navy;
-              border-radius : 3px;
-              background    : white;
-              position      : absolute;
-              top           : 55%;
-              left          : 5%;
-              width         : 85%;
-              height        : 10em;
-              overflow-y    : hidden;
-              overflow-x    : auto;
-              cursor        : pointer;
-              margin-bottom : 2%;
-              margin-left   : 2%;
-            }
-
-           </style>
 
   </head>
 
@@ -110,6 +131,9 @@
       
     </div>
     -->
+    <div id="dojoTimeLineWidgetContainer">
+    
+    </div>
 
     <div id="dojoTimeLine" >
 
