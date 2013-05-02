@@ -168,8 +168,9 @@ function(declare,
 
     animateOnDateSelect: function(e){
         var dateContainerCount     = query('.dateContainer').length;
-        var currentContainerNumber = 14;
-        
+
+        var currentContainerNumber;
+
         var divsBefore = [];
         var divsAfter  = [];
 
@@ -184,12 +185,11 @@ function(declare,
         var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).w;
         var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).h;
 
-
         __self.selectedDateDomNode = domConstruct.create('div',
-                                                      {innerHTML :  e.innerHTML,
+                                                      {id: "selectedDateDomNode_"+ domAttr.get(__self.domNode,'id'),
+                                                       innerHTML :  e.innerHTML,
                                                        style     : 'background  : #FEDEDE; \
                                                                     z-index     : 10000;   \
-                                                                    height      : 10em;    \
                                                                     overflow-x  : hidden;  \
                                                                     overflow-y  : hidden;  \
                                                                     font-family : Helvetica,Sans-serif,Tahoma,Ubuntu\
@@ -200,19 +200,19 @@ function(declare,
                                                       'before');
 
         baseFx.animateProperty({node       : __self.selectedDateDomNode,
-                                properties : {left   : {start : domGeom.position(this).x, 
+                                properties : {left   : {start : domGeom.position(__self.selectedDateDomNode).x, 
                                                         end   : xOfDojoTimeLine
                                                         },
-                                              width  : {start : domGeom.position(this).w, 
+                                              width  : {start : domGeom.position(__self.selectedDateDomNode).w, 
                                                         end   : wOfDojoTimeLine
                                                         },
-                                              height: {start : domGeom.position(this).h, 
-                                                        end   : hOfDojoTimeLine
-                                                      }
+                                              height : domGeom.position(__self.dateContainerDomNode).h
                                               }, 
                                 duration   : 800
                           }).play();
 
+        domStyle.set(__self.dateContainerDomNode,'display','none');
+        
         on(__self.selectedDateDomNode,
            'click',
             function(e){
@@ -225,8 +225,10 @@ function(declare,
                                                     }, 
                                 duration   : 800
                               }).play();
-              
-              domConstruct.destroy(__self.selectedDateDomNode);
+
+              domConstruct.destroy("selectedDateDomNode_"+ domAttr.get(__self.domNode,'id'));              
+              domStyle.set(__self.dateContainerDomNode,'display','block');              
+
             }
         );
     },
