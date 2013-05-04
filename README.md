@@ -30,13 +30,15 @@ HOW TO TEST:
 
 4. Install dependencies with <code> venv/bin/pip install -r docs/REQUIREMENTS.txt  
 
-5. Run with python : <code> venv/bin/python flask_timeline.py </code>  
+5. Run with python : <code> venv/bin/python flask_timeline.py </code> to start the server  
+
+6. Visit <link> 127.0.0.1:5000 </link> in your browser to test it out...  
 
 
 
-QUERIES ?:  
-==========
 
-Please email me 
+Queries & Suggestions ?:  
+=======================
 
+Please email me
 
