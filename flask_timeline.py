@@ -18,7 +18,7 @@ from flask import Flask, request, session, g, redirect, url_for, \
 
 
 # configuration
-DATABASE   = '/tmp/flask_timeline.db'
+DATABASE   = './flask_timeline.db'
 DEBUG      = True
 SECRET_KEY = 'development key'
 USERNAME   = 'admin'
@@ -80,10 +80,10 @@ def get_events():
 @app.route('/dojotimeline/add_event', methods = ["POST"])
 def add_event():
 
-    g.db.execute('insert into timeline_entry (title, description, date) values (?, ?, ?)',
+    g.db.execute('insert into timeline_entry(title, description, event_date) values (?, ?, ?)',
                  [request.form['title'], 
                   request.form['description'], 
-                  request.form['date']
+                  request.form['event_date']
                  ]
     )
 

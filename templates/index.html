@@ -102,8 +102,8 @@
                 console.log(dojoTimeLineWidget);
 
                 on(dom.byId('addEventForm'), 'submit',function(e){
-                   e.preventDefault();
-                   alert("form submission will work soon ! ");
+//                   e.preventDefault();
+//                   alert("form submission will work soon ! ");
                    return false;
                 });
                 
@@ -152,7 +152,7 @@
        <dl> 
        <dt> Title <input type= "text" value = "" name = "title" id= "add_event_title">
        <dd> Desc. <textarea value = "" name = "description" id = "add_event_description rows="20" cols="20"> </textarea>
-       <dt> Date  <input type="text" value="" name ="date" id="add_event_date">
+       <dt> Date  <input type="text" value="" name ="event_date" id="add_event_date">
        <dd> <input type="submit" value="Add Event" id="add_event_form_submit_button">
        </dl>
      </form>
