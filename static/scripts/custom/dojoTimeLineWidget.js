@@ -240,9 +240,72 @@ function(declare,
         );
     },
 
-    _fetchEventsOnLoad : function(){
+    _dummyEvents     : [{ date         : new Date(1,12,2012)    ,
+                             title        : "First Event"          ,
+                             description  : "What an Inauguration" ,
+                             absoluteUrl  : "/"
+                        },
+                        { date         : new Date(1,01,2013)       ,
+                             title        : "Second Event"             ,
+                             description  : "This is the second event" ,
+                             absoluteUrl  : "/"
+                        },
+                        { date         : new Date(1,02,2013)    ,
+                             title        : "Watch !"          ,
+                             description  : "Bought a Fossil watch" ,
+                             absoluteUrl  : "/"
+                        },
+                        { date         : new Date(3,01,2013)    ,
+                             title        : "Twitter handle !"          ,
+                             description  : "Got a twitter handle" ,
+                             absoluteUrl  : "/"
+                        },
+                        { date         : new Date(3,12,2012)    ,
+                             title        : "Bought a House !"          ,
+                             description  : "What an Inauguration" ,
+                             absoluteUrl  : "/"
+                        }
+    ],
+
+    _fetchEventsOnLoad : function(url){
         // This will run on load after widget instantiation to fetch a list of events datewise from the server as JSON
         // This will then display the events on the calendar
+      request(url).
+      then(
+        function(json){
+          console.log(json);
+          var jsondata    = JSON.parse(json);
+          var year        = jsondata.year;
+          var month       = jsondata.month; 
+          var monthIndex  = month-1;
+          var day         = jsondata.day; 
+          var verboseMonth = __self.verboseMonthList[monthIndex];
+          console.log("selected month is: " + verboseMonth);
+          array.forEach(query('.monthDiv'), 
+                        function(month){
+                          if(month.innerHTML == verboseMonth){
+                            /*
+                            domConstruct.create('img',
+                                                {style : 'height:6px; width:6px; margin:-1px; padding:0px;position:relative;top:-2px;', 
+                                                 src   : 'static/images/green-icon.png', 
+                                                 title : "Has Events "
+                                                },
+                                                month,
+                                                'last');
+                            */
+                            domStyle.set(month,{borderRadius : "5px", 
+                                                border       : "solid green 2px", 
+                                                background   : "khakhi",
+                                                boxShadow    : "2px 2px 2px #aaa"
+                            });
+                            domAttr.set(month,{title: jsondata.title});
+                          }
+                        });
+        }, 
+        function(error){
+          console.log("Error! Server is not accesible\nError Returned is: " + error);
+        }
+      );
     },
     
     _fetchEventsOnUpdate: function(){
@@ -250,6 +313,11 @@ function(declare,
     },
     
     onMonthNodeClick: function(e){
+
+                  String.prototype.capitalize = function() {
+                    return this.charAt(0).toUpperCase() + this.slice(1);
+                  }
+
                 __self.selectedMonth = e.target;
 
                 __self.setInactiveMonthStyle();
@@ -331,6 +399,8 @@ function(declare,
                     
                     console.log("About to Bind the Animation to date selectors...");
                     __self.animateOnDateSelect(e.target);
+                    
+                    __self._fetchEventsOnLoad("/dojotimeline/get_events");
 
                     var chosenDate = new Date(__self.year, __self.month,__self.day);
                     __self.date      = chosenDate;
@@ -361,7 +431,7 @@ function(declare,
                               array.forEach(query('.monthDiv'),
                                             function(div){ 
                                               domStyle.set(div,
-                                                          {background  : 'lightblue',
+                                                          {background   : 'lightgoldenrodyellow',
                                                             color       : 'black', 
                                                             display     : 'inline-block',
                                                             whiteSpace  : 'nowrap'
@@ -438,7 +508,7 @@ function(declare,
                                                                           {style : "height          : 0.9em;             \
                                                                                     margin          : 1px 0px 1px 0px;   \
                                                                                     padding         : 0px 0px 6px 0px;   \
-                                                                                    background      : lightblue;         \
+                                                                                    background      : lightgoldenrodyellow;\
                                                                                     box-shadow      : -1px 2px 3px #aaa; \
                                                                                     text-align      : center;            \
                                                                                     vertical-align  : middle;            \
