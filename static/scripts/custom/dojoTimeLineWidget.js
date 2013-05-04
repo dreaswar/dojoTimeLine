@@ -17,6 +17,10 @@ require([
     'dojo/fx'           ,
     'dojo/_base/fx'     ,
     
+    "dojo/_base/xhr",
+    "dojo/request"  ,
+    "dojo/json"     ,
+    
     "dijit/_WidgetBase"     ,
     "dijit/_TemplatedMixin" ,
 
@@ -37,6 +41,10 @@ function(declare,
           dojoDate,
           fx,
           baseFx,
+
+          xhr    ,
+          request,
+          JSON   ,
 
          _WidgetBase,
          _TemplatedMixin){
@@ -186,7 +194,7 @@ function(declare,
         var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).h;
 
         __self.selectedDateDomNode = domConstruct.create('div',
-                                                      {id: "selectedDateDomNode_"+ domAttr.get(__self.domNode,'id'),
+                                                      {id        : "selectedDateDomNode_"+ domAttr.get(__self.domNode,'id'),
                                                        innerHTML :  e.innerHTML,
                                                        style     : 'background  : #FEDEDE; \
                                                                     z-index     : 10000;   \
@@ -216,12 +224,11 @@ function(declare,
         on(__self.selectedDateDomNode,
            'click',
             function(e){
-              baseFx.animateProperty({node       : e.target,
-                                      properties : {left   : domGeom.position(e.target).x,
-                                                    width  : {start : domGeom.position(e.target).w, 
-                                                              end   : 10
-                                                              },
-                                                    opacity: {start: 1, end:0.1}
+              baseFx.animateProperty({node       : __self.selectedDateDomNode,
+                                      properties : {left   : domGeom.position(__self.selectedDateDomNode).x,
+                                                    width  : domGeom.position(__self.selectedDateDomNode).w,
+                                                    height : 0,
+                                                    opacity: 0
                                                     }, 
                                 duration   : 800
                               }).play();
@@ -233,6 +240,15 @@ function(declare,
         );
     },
 
+    _fetchEventsOnLoad : function(){
+        // This will run on load after widget instantiation to fetch a list of events datewise from the server as JSON
+        // This will then display the events on the calendar
+    },
+    
+    _fetchEventsOnUpdate: function(){
+      // This is called on a update on a data elsewhere so that the timeline updates itself
+    },
+    
     onMonthNodeClick: function(e){
                 __self.selectedMonth = e.target;
 
