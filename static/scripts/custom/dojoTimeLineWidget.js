@@ -22,9 +22,9 @@ require([
     "dojo/json"     ,
     
     "dijit/_WidgetBase"     ,
-    "dijit/_TemplatedMixin" ,
+    "dijit/_TemplatedMixin" 
 
-    'dojoTimeLine/dojoTimeLineAnim'
+
 ], 
 function(declare, 
           dom, 

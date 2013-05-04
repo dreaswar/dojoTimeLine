@@ -77,6 +77,19 @@ def get_events():
 
 
 
+@app.route('/dojotimeline/add_event', methods = ["POST"])
+def add_event():
+
+    g.db.execute('insert into timeline_entry (title, description, date) values (?, ?, ?)',
+                 [request.form['title'], 
+                  request.form['description'], 
+                  request.form['date']
+                 ]
+    )
+
+    g.db.commit()
+
+    return jsonify(success = True, message = "Event Successfully Added")
 
 
 
