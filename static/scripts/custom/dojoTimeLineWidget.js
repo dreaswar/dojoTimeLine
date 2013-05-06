@@ -136,7 +136,7 @@ function(declare,
                                           this.yearLineDomNode,
                                           'last'
                                           );
-                      console.log("Created the Year line div under " + domAttr.get(this.yearLineDomNode,'id')? "yes_ID":"no_ID" );
+                      console.log("Created the Year line div under " + domAttr.get(this.yearLineDomNode,'id') );
                       this.yearNodeList.push(yearNode);
                       console.log(yearNode);
                       yearNode.innerHTML = this.yearList[i];
@@ -275,16 +275,35 @@ function(declare,
         function(json){
           console.log(json);
           var jsondata    = JSON.parse(json);
+          var all_events  = jsondata.all_events; 
+
+          var date_array  = new Array();
+          var year_array  = new Array();
+          var month_array = new Array();
+          var day_array   = new Array();
+          var date_map    = new Object();
+
+          for(var x=0; x< all_events.length; x++){
+             date_array.push( all_events[x].event_date );
+          }
+          
+          domConstruct.create('div',
+                              {innerHTML : date_array}, 
+                              dom.byId('addEventFormDiv'), 
+                              'after');
+          
+          /*
           var year        = jsondata.year;
           var month       = jsondata.month; 
           var monthIndex  = month-1;
           var day         = jsondata.day; 
           var verboseMonth = __self.verboseMonthList[monthIndex];
           console.log("selected month is: " + verboseMonth);
+
           array.forEach(query('.monthDiv'), 
                         function(month){
                           if(month.innerHTML == verboseMonth){
-                            /*
+                            
                             domConstruct.create('img',
                                                 {style : 'height:6px; width:6px; margin:-1px; padding:0px;position:relative;top:-2px;', 
                                                  src   : 'static/images/green-icon.png', 
@@ -292,7 +311,7 @@ function(declare,
                                                 },
                                                 month,
                                                 'last');
-                            */
+                            
                             domStyle.set(month,{borderRadius : "5px", 
                                                 border       : "solid green 2px", 
                                                 background   : "khakhi",
@@ -301,6 +320,8 @@ function(declare,
                             domAttr.set(month,{title: jsondata.title});
                           }
                         });
+        */
+
         }, 
         function(error){
           console.log("Error! Server is not accesible\nError Returned is: " + error);

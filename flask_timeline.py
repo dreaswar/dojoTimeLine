@@ -73,7 +73,44 @@ def get_events():
                'title'      : "First Event" ,
                'description' : 'First Event recorded on this day !! Ye !'
              }]
-    return jsonify(year= 2010, month = 12, day=11,title='First Event', description="A new event")
+
+    print g.db
+    cur        = g.db.execute('SELECT * FROM timeline_entry')
+    print cur
+    yr_mon_day_map = {}
+    all_events  = []
+
+    for row in cur.fetchall():
+
+      print row
+      e_yr  = int( row[3].split('-')[0].strip() )
+      e_mon = int( row[3].split('-')[1].strip() )
+      e_d   = int( row[3].split('-')[2].strip() )
+
+      if not e_yr in yr_mon_day_map.keys():
+        yr_mon_day_map[e_yr] = {e_mon:[]}
+      else:
+        mon_dict = yr_mon_day_map[e_yr]
+        if e_mon in mon_dict.keys():
+          day_list = mon_dict[e_mon]
+          day_list.append(e_d)
+        else:
+          mon_dict[e_mon] = [e_d]
+    
+      event = dict(title       = row[1].strip(), 
+                   description = row[2].strip(), 
+                   event_date  = row[3].replace(' ',''), 
+                   event_year  = int( row[3].split('-')[0].strip() ), 
+                   event_month = int( row[3].split('-')[1].strip() ),
+                   event_day   = int( row[3].split('-')[2].strip() )
+                  );
+      print event
+      all_events.append(event)
+
+    print yr_mon_day_map
+    jsonlist =  dict(all_events = all_events)
+    print jsonlist
+    return jsonify(all_events = all_events)
 
 
 

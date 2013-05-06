@@ -86,7 +86,12 @@
               require([
                        "dojoTimeLine/dojoTimeLineWidget", 
                        "dojo/parser", 
-                       "dojo/dom","dojo/on","dojo/json",
+                       "dojo/dom",
+                       "dojo/on",
+                       "dojo/json",
+                       "dojo/request",
+                       "dojo/dom-form",
+                       "dojo/dom-attr",
 
                        "dijit/layout/BorderContainer", 
                        "dijit/layout/TabContainer", 
@@ -96,12 +101,29 @@
                         
 
                        'dojo/domReady!'],
-              function(dojoTimeLineWidget, parser, dom,on,JSON){
+              function(dojoTimeLineWidget, parser, dom,on,JSON, request, domForm, domAttr){
 
                 //Runs the dojoTimeLine....
                 console.log(dojoTimeLineWidget);
 
                 on(dom.byId('addEventForm'), 'submit',function(e){
+                   e.preventDefault();
+                   var formObj  = e.target;
+                   var formPost = domForm.toObject(formObj);
+                   var urlToPost = domAttr.get(formObj,'action');
+                   request.post(urlToPost,{data: formPost}).
+                   then(function(json){ 
+                           alert("Good");
+                           var jsondata = JSON.parse(json);
+                           console.log(jsondata);
+                           return false;
+                        }, 
+                        function(err){ 
+                           alert("Bad"); 
+                           return false;
+                        }
+                   );
+                   console.log(formPost);
 //                   e.preventDefault();
 //                   alert("form submission will work soon ! ");
                    return false;
