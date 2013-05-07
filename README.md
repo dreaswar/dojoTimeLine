@@ -30,9 +30,12 @@ HOW TO TEST:
 
 4. Install dependencies with <code> venv/bin/pip install -r docs/REQUIREMENTS.txt  
 
-5. Run with python : <code> venv/bin/python flask_timeline.py </code> to start the server  
+5. Download the latest Dojo library; This has been tested with Dojo 1.8.3 release.   
+   Put the directory into <code> ./static/scripts/lib/ </code> and rename the directory <code> dojo1.8.3 </code>  
 
-6. Visit <link> 127.0.0.1:5000 </link> in your browser to test it out...  
+6. Run with python : <code> venv/bin/python flask_timeline.py </code> to start the server   
+ 
+7. Visit <link> 127.0.0.1:5000 </link> in your browser to test it out...  
 
 
 
