@@ -99,7 +99,6 @@ function(declare,
           for (var i=1; i< 31 ; i++){
             this.dayList.push(i);
           }
-          console.log(this);
         },
 
       setYearLine: function (){
@@ -107,44 +106,67 @@ function(declare,
 
                       __self = this;
 
+                      this.yearLineDragPane = domConstruct.create('div',
+                                                    { id    : domAttr.get(this.domNode,'id')+"_yearLineDragPane",
+                                                      style : "position     : absolute; \
+                                                              top           : 7em;      \
+                                                              height        : 1em;      \
+                                                              font-family   : Helvetica,Sans-serif,Tahoma,Ubuntu;\
+                                                              display       : inline-block; \
+                                                              white-space   : nowrap;       \
+                                                              overflow-x    : hidden;       \
+                                                              overflow-y    : hidden;       \
+                                                              background    : lightblue;    \
+                                                              box-shadow    : 0px 2px 2px #aaa;\
+                                                              opacity       : 0.85;            \
+                                                              margin-bottom : 5px;             \
+                                                              "
+                                                    },
+                                                    this.domNode,
+                                                    'first');
+
                       this.yearLineDomNode = domConstruct.create('div',
-                                          {style : "position   : absolute;\
-                                                    top        : 7em;     \
-                                                    height     : 1em;     \
-                                                    font-family: Helvetica,Sans-serif,Tahoma,Ubuntu;\
-                                                    display    : inline-block; \
-                                                    white-space: nowrap;       \
-                                                    overflow-x : auto;         \
-                                                    overflow-y : hidden;       \
-                                                    background : lightblue;    \
-                                                    box-shadow : 0px 2px 2px #aaa;\
-                                                    opacity    : 0.85;\
-                                                    margin-bottom: 5px;\
-                                                    "
-                                          },
-                                          this.domNode,
-                                          'first');
-                      console.log("Created the this.yearLineDomNode @");
-                      console.log(this.yearLineDomNode);
+                                                    { id    : domAttr.get(this.domNode,'id')+"_yearLine",
+                                                      style : "position   : absolute; \
+                                                              top        : 7em;       \
+                                                              height     : 1em;       \
+                                                              font-family: Helvetica,Sans-serif,Tahoma,Ubuntu;\
+                                                              display    : inline-block;    \
+                                                              background : lightblue;       \
+                                                              box-shadow : 0px 2px 2px #aaa;\
+                                                              opacity    : 0.85;            \
+                                                              margin-bottom: 5px;           \
+                                                              "
+                                                    },
+                                                    this.yearLineDragPane,
+                                                    'after');
+                      /*
+                      this.yearLineDragPane = new DragPane({id: domAttr.get(this.yearLineDragPane,'id')},
+                                                           domAttr.get(this.yearLineDragPane,'id')
+                                                          );
+                      this.yearLineDragPane.startup();
+                      */
 
-                      console.log("About to create the Yearline years...");
+//                       console.log("Created the this.yearLineDomNode @");
+//                       console.log(this.yearLineDomNode);
+//                       console.log("About to create the Yearline years...");
+
                       for (var i=0; i < this.yearList.length; i++ ){
+                        var yearToInsert = domAttr.get(this.domNode,'id') + '_span_' + this.yearList[i];
+//                      console.log("About to inser Year " + yearToInsert);
 
-                      var yearToInsert = domAttr.get(this.domNode,'id') + '_span_' + this.yearList[i];
-                      console.log("About to inser Year " + yearToInsert);
-
-                      var yearNode = domConstruct.create('span',
-                                          {id    : yearToInsert, 
-                                           class : 'dojoTimeLineYearLineSpan',
-                                           style : this.nonSelectedStyle
-                                          },
-                                          this.yearLineDomNode,
-                                          'last'
-                                          );
-                      console.log("Created the Year line div under " + domAttr.get(this.yearLineDomNode,'id') );
-                      this.yearNodeList.push(yearNode);
-                      console.log(yearNode);
-                      yearNode.innerHTML = this.yearList[i];
+                        var yearNode = domConstruct.create('span',
+                                            {id    : yearToInsert, 
+                                            class : 'dojoTimeLineYearLineSpan',
+                                            style : this.nonSelectedStyle
+                                            },
+                                            this.yearLineDomNode,
+                                            'last'
+                                            );
+  //                    console.log("Created the Year line div under " + domAttr.get(this.yearLineDomNode,'id') );
+                        this.yearNodeList.push(yearNode);
+  //                    console.log(yearNode);
+                        yearNode.innerHTML = this.yearList[i];
                     }
                     this.__setBinders();
       },
@@ -152,9 +174,8 @@ function(declare,
     __setBinders: function(){
 
         for (var y=0; y< __self.yearNodeList.length; y++){
-          
-          console.log("About to Bind the Mouseover event to year line");
-          console.log("Binding to the node: " + __self.yearNodeList[y]);
+//           console.log("About to Bind the Mouseover event to year line");
+//           console.log("Binding to the node: " + __self.yearNodeList[y]);
           on(dom.byId(__self.yearNodeList[y]), 
             'mouseover', 
             function(e){ 
@@ -165,7 +186,7 @@ function(declare,
                 }
             }
           );
-          console.log("Bound the Mouseover event to year line");
+//           console.log("Bound the Mouseover event to year line");
 
           on(dom.byId(__self.yearNodeList[y]), 
             'mouseout', 
@@ -177,9 +198,9 @@ function(declare,
                 }
             }
           );
-          console.log("Bound the Mouseout event to year line");
+//           console.log("Bound the Mouseout event to year line");
           on(dom.byId(__self.yearNodeList[y]),'click', __self.onYearNodeClick);
-          console.log("Bound the Click event to year line");
+//           console.log("Bound the Click event to year line");
         }
     },
 
@@ -195,6 +216,9 @@ function(declare,
           return domGeom.position(dom.byId('dateContainer_'+x)).x;
         }
 
+        var wOfe   = domGeom.position(e).w;
+        var xOfe   = domGeom.position(e).x;
+
         var xOfDojoTimeLine   = domGeom.position(__self.domNode).x;
         var hOfDojoTimeLine   = domGeom.position(__self.domNode).h;      
         var wOfDojoTimeLine   = domGeom.position(__self.domNode).w;
@@ -202,6 +226,24 @@ function(declare,
         var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).w;
         var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).h;
 
+        array.forEach(query('.chosenDate'), function(node){
+          if (node != e) {
+            domClass.remove(node, 'chosenDate');
+            baseFx.animateProperty({node       : node,
+                                    properties : {width: wOfe, background:"white", color:"#aaa"}, 
+                                    duration   : 800
+                        }).play();
+          }
+        });
+        domClass.add(e,'chosenDate');
+        baseFx.animateProperty({node     : e,
+                              properties : {width: wOfe*20 ,background  : "#ffc" , color:"#aaa"}, 
+                              duration   : 800
+                        }).play();
+
+
+
+        /*
         __self.selectedDateDomNode = domConstruct.create('div',
                                                       {id        : "selectedDateDomNode_"+ domAttr.get(__self.domNode,'id'),
                                                        innerHTML :  e.innerHTML,
@@ -247,6 +289,8 @@ function(declare,
 
             }
         );
+    */
+
     },
 
     _dummyEvents     : [{ date         : new Date(1,12,2012)    ,
@@ -282,7 +326,7 @@ function(declare,
       request(url).
       then(
         function(json){
-          console.log(json);
+//           console.log(json);
           var jsondata    = JSON.parse(json);
           var all_events  = jsondata.all_events; 
 
@@ -299,13 +343,16 @@ function(declare,
           for(var x=0; x< all_events.length; x++){
             array.forEach(query('.dojoTimeLineYearLineSpan'), 
                           function(yearSpan){
-                            console.log(yearSpan.innerHTML);
-                            console.log(all_events[x].event_year);
+//                             console.log(yearSpan.innerHTML);
+//                             console.log(all_events[x].event_year);
 
                             if(yearSpan.innerHTML == all_events[x].event_year){
                                 domClass.remove(yearSpan,'hasNoEvent');  
                                 domClass.add(yearSpan,'hasEvent');
-                                console.log("Background Changed");
+                                if (domStyle.get(yearSpan,'display') == 'none'){
+                                  domStyle.set(yearSpan,'display','inline');
+                                }
+//                                 console.log("Background Changed");
                             }else{
                               if(! domClass.contains(yearSpan,'hasEvent') ){
                                 domClass.add(yearSpan,'hasNoEvent');
@@ -322,7 +369,7 @@ function(declare,
                             */
             });
           }
-
+          /*
           domConstruct.create('div',
                               {innerHTML : date_array, 
                                style     : "position   : relative; \
@@ -335,6 +382,7 @@ function(declare,
                               }, 
                               dom.byId('addEventFormDiv'), 
                               'after');
+          */
         }, 
         function(error){
           console.log("Error! Server is not accesible\nError Returned is: " + error);
@@ -388,9 +436,9 @@ function(declare,
                                                                 __self.domNode,
                                                                 0
                                               );
-                console.log("Created a single dateContainer");
+//                 console.log("Created a single dateContainer");
 
-                console.log("About to Create all the individual Date Containers..");
+//                 console.log("About to Create all the individual Date Containers..");
                 for(var i=1; i <= Number(daysInMonth); i++){
                   domConstruct.create('div',
                                     {id        : domAttr.get(__self.domNode,'id')+'_dateContainer_'+i,
@@ -415,7 +463,7 @@ function(declare,
                                     'last'
                   );
                   on(query('.dateContainer'), 'click', __self.onDateNodeClick );
-                  console.log("Bound the event on dateContainer");
+//                   console.log("Bound the event on dateContainer");
                 }
       },
 
@@ -429,9 +477,9 @@ function(declare,
                                     domStyle.set(div,{background:'white'});
                                   });
 
-                    domStyle.set(e.target,{background:'#FEDEDE'});
+                    domStyle.set(e.target,{background:'#ffe'});
                     
-                    console.log("About to Bind the Animation to date selectors...");
+//                     console.log("About to Bind the Animation to date selectors...");
                     __self.animateOnDateSelect(e.target);
                     
                     __self._fetchEventsOnLoad("/dojotimeline/get_events");
@@ -475,21 +523,21 @@ function(declare,
       },
 
       onYearNodeClick: function(e){
-                          console.log(__self);
+//                           console.log(__self);
                           if(__self.selectedYear){
-                            console.log("Selected Year has been set already");
+//                             console.log("Selected Year has been set already");
                             if(e.target != __self.selectedYear){
                               domStyle.set(__self.selectedYear,{background:'lightblue'});
                             }
                           }
 
-                          console.log("Trying to set clicked target to lightblue");
+//                           console.log("Trying to set clicked target to lightblue");
                           domStyle.set(e.target,{background:'lightblue'});
                           __self.selectedYear = e.target;
 
                           if( !__self.selectedYearDomNode){
                             //var timeLineWidth = this.domNode.scrollWidth.toString()+"px";
-                            console.log("There is no selectedYearDomNode so far.. creating one..");
+//                             console.log("There is no selectedYearDomNode so far.. creating one..");
                             __self.selectedYearDomNode = domConstruct.create('div',
                                                                             { style : "white-space    : nowrap;           \
                                                                                       overflow-x     : auto;             \
@@ -511,16 +559,17 @@ function(declare,
                                                                           'before');
                           }
 
-                          console.log("Trying to set Cascading changes in style to yearLineDomNode, domNode, and selectedYearDomNode");
-                          console.log(__self);
-                          console.log(__self.selectedYearDomNode);
-                          console.log(__self.yearLineDomNode);
-                          console.log(__self.domNode);
+//                           console.log("Trying to set Cascading changes in style to yearLineDomNode, domNode, and selectedYearDomNode");
+//                           console.log(__self);
+//                           console.log(__self.selectedYearDomNode);
+//                           console.log(__self.yearLineDomNode);
+//                           console.log(__self.domNode);
 
+                          domStyle.set(__self.yearLineDragPane,{display   : 'none'});
                           domStyle.set(__self.yearLineDomNode,{display   : 'none'});
                           domStyle.set(__self.domNode,{overflowX : 'hidden'});
                           domStyle.set(__self.selectedYearDomNode,{width: "99.4%",overflow:'hidden',display:'block'});
-                          console.log("Cascading changes in style to yearLineDomNode, domNode, and selectedYearDomNode set..");
+//                           console.log("Cascading changes in style to yearLineDomNode, domNode, and selectedYearDomNode set..");
 
                           __self.selectedYearDomNode.innerHTML = e.target.innerHTML;
 
@@ -577,7 +626,7 @@ function(declare,
                                               'last');
                             }
 
-                            console.log("About to Bind the event on monthDiv click");
+//                             console.log("About to Bind the event on monthDiv click");
                             on(query('.monthDiv'),'click',__self.onMonthNodeClick);
                           }else{
                             domStyle.set(__self.monthListDivDomNode,{display:'block'});
@@ -586,16 +635,22 @@ function(declare,
 
 
                           on( __self.showYearLineDomNode,'click',__self.onShowYearLineDomNodeClick);
-                          console.log("Bound the event on showYearLineDomNode click..");
+//                           console.log("Bound the event on showYearLineDomNode click..");
       },
 
     onShowYearLineDomNodeClick: function(e){
-                                    domStyle.set( __self.yearLineDomNode,
+                                    
+                                    domStyle.set( __self.yearLineDragPane,
                                                   {display:'block'} 
+                                    );                               
+                                    domStyle.set( __self.yearLineDomNode,
+                                                  {display:'inline-block'} 
                                     ); 
+                                    /*
                                     domStyle.set( __self.yearLineDomNode,
                                                   {overflowX:'auto'} 
                                     );
+                                    */
                                     domStyle.set( __self.selectedYearDomNode,
                                                   {display:'none'} 
                                     );
@@ -615,21 +670,21 @@ function(declare,
                                                       class : "dojoTimeLineWidget",
                                                       style : domStyle.get(dom.byId("dojoTimeLineWidgetContainer"),'style')
                                                     });
-          this.dragPane  = new DragPane({id: 'dojoTimeLineWidget'},'dojoTimeLineWidget');
-          this.dragPane.startup();
+//        this.dragPane  = new DragPane({id: 'dojoTimeLineWidget'},'dojoTimeLineWidget');
+//        this.dragPane.startup();
           this.setTimeLineDateVars();
           this.setYearLine();
           this.inherited(arguments);
-          console.log("Completed the Rendering");
+//        console.log("Completed the Rendering");
     },
 
     postCreate    : function(){
-        // Binding the events and more DOMS to create ..
-        console.log(this.yearNodeList);
-        console.log(this.yearNodeList.length);
+      // Binding the events and more DOMS to create ..
+//      console.log(this.yearNodeList);
+//      console.log(this.yearNodeList.length);
         this._fetchEventsOnLoad("/dojotimeline/get_events");
         this.inherited(arguments);        
-        console.log("Completed the PostCreate");
+//      console.log("Completed the PostCreate");
     }
 
   });

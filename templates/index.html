@@ -28,7 +28,7 @@
             border-radius : 3px;
             background    : white;
             width         : 85%;
-            height    : 10em;
+            height        : 10em;
             overflow-y    : hidden;
             overflow-x    : auto;
             cursor        : pointer;
@@ -38,13 +38,13 @@
 
           #dojoTimeLineWidget_0{
             background    : white;
-            height    : 10em;
+            height        : 10em;
             overflow-y    : hidden;
-            overflow-x    : auto;
+            overflow-x    : hidden;
             cursor        : pointer;
           }
 
-       
+
          #appContainer{
            position: absolute;
            top     : 0;
@@ -58,7 +58,7 @@
             top           : 5%;
             left          : 5%;            
           }
-          
+
           .hasEvent{
             background: lightgoldenrodyellow !important;
             border-radius: 5px;
@@ -73,7 +73,9 @@
             border:none;
             box-shadow: none;
             overflow:hidden;            
+            opacity : 0.4;
           }
+
         </style>
 
           <script type="text/javascript">
@@ -139,6 +141,8 @@
                            console.log("Successfully Added.");
                            var jsondata = JSON.parse(json);
                            console.log(jsondata);
+                           registry.byId('dojoTimeLineWidget_0')._fetchEventsOnLoad("/dojotimeline/get_events");
+                           formObj.reset();
                            return false;
                         }, 
                         function(err){ 
