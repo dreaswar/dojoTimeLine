@@ -24,8 +24,9 @@ require([
     
     "dijit/_WidgetBase"     ,
     "dijit/_TemplatedMixin" ,
-    "dojox/layout/DragPane"
-
+    "dojox/layout/DragPane" ,
+    
+    "dojo/store/Memory"
 
 ], 
 function(declare, 
@@ -52,7 +53,8 @@ function(declare,
          _WidgetBase,
          _TemplatedMixin,
 
-         DragPane){
+         DragPane,
+         Memory){
 
     declare("dojoTimeLineWidget", [_WidgetBase], {
 
@@ -140,20 +142,9 @@ function(declare,
                                                     },
                                                     this.yearLineDragPane,
                                                     'after');
-                      /*
-                      this.yearLineDragPane = new DragPane({id: domAttr.get(this.yearLineDragPane,'id')},
-                                                           domAttr.get(this.yearLineDragPane,'id')
-                                                          );
-                      this.yearLineDragPane.startup();
-                      */
-
-//                       console.log("Created the this.yearLineDomNode @");
-//                       console.log(this.yearLineDomNode);
-//                       console.log("About to create the Yearline years...");
 
                       for (var i=0; i < this.yearList.length; i++ ){
                         var yearToInsert = domAttr.get(this.domNode,'id') + '_span_' + this.yearList[i];
-//                      console.log("About to inser Year " + yearToInsert);
 
                         var yearNode = domConstruct.create('span',
                                             {id    : yearToInsert, 
@@ -163,9 +154,9 @@ function(declare,
                                             this.yearLineDomNode,
                                             'last'
                                             );
-  //                    console.log("Created the Year line div under " + domAttr.get(this.yearLineDomNode,'id') );
+ 
                         this.yearNodeList.push(yearNode);
-  //                    console.log(yearNode);
+
                         yearNode.innerHTML = this.yearList[i];
                     }
                     this.__setBinders();
@@ -174,8 +165,6 @@ function(declare,
     __setBinders: function(){
 
         for (var y=0; y< __self.yearNodeList.length; y++){
-//           console.log("About to Bind the Mouseover event to year line");
-//           console.log("Binding to the node: " + __self.yearNodeList[y]);
           on(dom.byId(__self.yearNodeList[y]), 
             'mouseover', 
             function(e){ 
@@ -186,7 +175,6 @@ function(declare,
                 }
             }
           );
-//           console.log("Bound the Mouseover event to year line");
 
           on(dom.byId(__self.yearNodeList[y]), 
             'mouseout', 
@@ -198,9 +186,8 @@ function(declare,
                 }
             }
           );
-//           console.log("Bound the Mouseout event to year line");
+          
           on(dom.byId(__self.yearNodeList[y]),'click', __self.onYearNodeClick);
-//           console.log("Bound the Click event to year line");
         }
     },
 
@@ -240,57 +227,6 @@ function(declare,
                               properties : {width: wOfe*20 ,background  : "#ffc" , color:"#aaa"}, 
                               duration   : 800
                         }).play();
-
-
-
-        /*
-        __self.selectedDateDomNode = domConstruct.create('div',
-                                                      {id        : "selectedDateDomNode_"+ domAttr.get(__self.domNode,'id'),
-                                                       innerHTML :  e.innerHTML,
-                                                       style     : 'background  : #FEDEDE; \
-                                                                    z-index     : 10000;   \
-                                                                    overflow-x  : hidden;  \
-                                                                    overflow-y  : hidden;  \
-                                                                    font-family : Helvetica,Sans-serif,Tahoma,Ubuntu\
-                                                                    color       : #aaa;    \
-                                                                  '
-                                                      },
-                                                      __self.dateContainerDomNode,
-                                                      'before');
-
-        baseFx.animateProperty({node       : __self.selectedDateDomNode,
-                                properties : {left   : {start : domGeom.position(__self.selectedDateDomNode).x, 
-                                                        end   : xOfDojoTimeLine
-                                                        },
-                                              width  : {start : domGeom.position(__self.selectedDateDomNode).w, 
-                                                        end   : wOfDojoTimeLine
-                                                        },
-                                              height : domGeom.position(__self.dateContainerDomNode).h
-                                              }, 
-                                duration   : 800
-                          }).play();
-
-        domStyle.set(__self.dateContainerDomNode,'display','none');
-        
-        on(__self.selectedDateDomNode,
-           'click',
-            function(e){
-              baseFx.animateProperty({node       : __self.selectedDateDomNode,
-                                      properties : {left   : domGeom.position(__self.selectedDateDomNode).x,
-                                                    width  : domGeom.position(__self.selectedDateDomNode).w,
-                                                    height : 0,
-                                                    opacity: 0
-                                                    }, 
-                                duration   : 800
-                              }).play();
-
-              domConstruct.destroy("selectedDateDomNode_"+ domAttr.get(__self.domNode,'id'));              
-              domStyle.set(__self.dateContainerDomNode,'display','block');              
-
-            }
-        );
-    */
-
     },
 
     _dummyEvents     : [{ date         : new Date(1,12,2012)    ,
@@ -326,7 +262,6 @@ function(declare,
       request(url).
       then(
         function(json){
-//           console.log(json);
           var jsondata    = JSON.parse(json);
           var all_events  = jsondata.all_events; 
 
@@ -336,6 +271,9 @@ function(declare,
           var day_array   = new Array();
           var date_map    = new Object();
 
+          var eventStore  = new Memory({data: [all_events], idProperty: 'event_date'});
+          console.log(eventStore);
+
           for(var x=0; x< all_events.length; x++){
              date_array.push( all_events[x].event_date );
           }
@@ -343,30 +281,17 @@ function(declare,
           for(var x=0; x< all_events.length; x++){
             array.forEach(query('.dojoTimeLineYearLineSpan'), 
                           function(yearSpan){
-//                             console.log(yearSpan.innerHTML);
-//                             console.log(all_events[x].event_year);
-
                             if(yearSpan.innerHTML == all_events[x].event_year){
                                 domClass.remove(yearSpan,'hasNoEvent');  
                                 domClass.add(yearSpan,'hasEvent');
                                 if (domStyle.get(yearSpan,'display') == 'none'){
                                   domStyle.set(yearSpan,'display','inline');
                                 }
-//                                 console.log("Background Changed");
                             }else{
                               if(! domClass.contains(yearSpan,'hasEvent') ){
                                 domClass.add(yearSpan,'hasNoEvent');
                               }
                             }
-
-                            /*
-                            else{
-                              domStyle.set(yearSpan,
-                                           {background   : "lightblue", 
-                                            borderRadius : "0px"
-                                           });
-                            }
-                            */
             });
           }
           /*
