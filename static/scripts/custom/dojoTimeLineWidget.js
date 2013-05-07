@@ -109,7 +109,7 @@ function(declare,
                       this.yearLineDragPane = domConstruct.create('div',
                                                     { id    : domAttr.get(this.domNode,'id')+"_yearLineDragPane",
                                                       style : "position     : absolute; \
-                                                              top           : 7em;      \
+                                                              top           : 85%;      \
                                                               height        : 1em;      \
                                                               font-family   : Helvetica,Sans-serif,Tahoma,Ubuntu;\
                                                               display       : inline-block; \
@@ -128,7 +128,7 @@ function(declare,
                       this.yearLineDomNode = domConstruct.create('div',
                                                     { id    : domAttr.get(this.domNode,'id')+"_yearLine",
                                                       style : "position   : absolute; \
-                                                              top        : 7em;       \
+                                                              top        : 85%;       \
                                                               height     : 1em;       \
                                                               font-family: Helvetica,Sans-serif,Tahoma,Ubuntu;\
                                                               display    : inline-block;    \
@@ -420,7 +420,7 @@ function(declare,
                   domConstruct.destroy(__self.dateContainerDomNode);
                 }
                 __self.dateContainerDomNode = domConstruct.create('div',
-                                                                {style : "height         : 10em;           \
+                                                                {style : "height         : 12em;           \
                                                                           position       : relative;       \
                                                                           top            : 0px;            \
                                                                           text-align     : center;         \
@@ -428,7 +428,7 @@ function(declare,
                                                                           display        : block;          \
                                                                           overflow-x     : auto;           \
                                                                           overflow-y     : hidden;         \
-                                                                          margin         : 0 0 -10.8em 0;  \
+                                                                          margin         : 0 0 -12em 0;  \
                                                                           white-space    : nowrap  ;       \
                                                                           background     : white   ;       \
                                                                           "
@@ -444,7 +444,7 @@ function(declare,
                                     {id        : domAttr.get(__self.domNode,'id')+'_dateContainer_'+i,
                                     class      : 'dateContainer',
                                     innerHTML  : i,
-                                    style      : "height         : 8em;              \
+                                    style      : "height         : 20em;              \
                                                   width          : 1.2em;            \
                                                   border-right   : solid 1px #ddd;   \
                                                   margin         : 0px -2px 0px 2px; \
@@ -551,7 +551,7 @@ function(declare,
                                                                                       text-align     : center;           \
                                                                                       vertical-align : middle;           \
                                                                                       position       : relative;         \
-                                                                                      top            : 7em;              \
+                                                                                      top            : 80%;              \
                                                                                       opacity        : 0.7;              \
                                                                                       left           : 0px; "
                                                                           },
@@ -596,7 +596,7 @@ function(declare,
                                                                                     text-align      : center;            \
                                                                                     vertical-align  : middle;            \
                                                                                     position        : relative;          \
-                                                                                    top             : 6.8em;               \
+                                                                                    top             : 80%;               \
                                                                                     white-space     : nowrap;            \
                                                                                     opacity         : .7 ;               \
                                                                                     display         : inline-block       \
