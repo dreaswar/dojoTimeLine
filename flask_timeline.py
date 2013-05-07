@@ -89,11 +89,16 @@ def get_events():
 
       if not e_yr in yr_mon_day_map.keys():
         yr_mon_day_map[e_yr] = {e_mon:[]}
+        mon_dict             = yr_mon_day_map[e_yr]
+        day_list             = mon_dict[e_mon]
+        day_list.append(e_d)
       else:
         mon_dict = yr_mon_day_map[e_yr]
         if e_mon in mon_dict.keys():
           day_list = mon_dict[e_mon]
           day_list.append(e_d)
+          print "Day List is: "
+          print day_list
         else:
           mon_dict[e_mon] = [e_d]
     

@@ -1,9 +1,10 @@
 require([
-    "dojo/_base/declare", 
-    'dojo/dom',
-    "dojo/dom-construct", 
-    "dojo/ready", 
-    "dojo/_base/window",
+    "dojo/_base/declare" , 
+    'dojo/dom'           ,
+    "dojo/dom-construct" , 
+    "dojo/dom-class"     ,
+    "dojo/ready"         , 
+    "dojo/_base/window"  ,
     
     'dojo/dom-style'     ,
     'dojo/dom-attr'      ,
@@ -14,21 +15,23 @@ require([
     'dojo/_base/array'   ,
     'dojo/date'          ,
 
-    'dojo/fx'           ,
-    'dojo/_base/fx'     ,
+    'dojo/fx'            ,
+    'dojo/_base/fx'      ,
     
-    "dojo/_base/xhr",
-    "dojo/request"  ,
-    "dojo/json"     ,
+    "dojo/_base/xhr"     ,
+    "dojo/request"       ,
+    "dojo/json"          ,
     
     "dijit/_WidgetBase"     ,
-    "dijit/_TemplatedMixin" 
+    "dijit/_TemplatedMixin" ,
+    "dojox/layout/DragPane"
 
 
 ], 
 function(declare, 
           dom, 
           domConstruct, 
+          domClass, 
           ready, 
           win, 
           domStyle,
@@ -47,7 +50,9 @@ function(declare,
           JSON   ,
 
          _WidgetBase,
-         _TemplatedMixin){
+         _TemplatedMixin,
+
+         DragPane){
 
     declare("dojoTimeLineWidget", [_WidgetBase], {
 
@@ -154,7 +159,9 @@ function(declare,
             'mouseover', 
             function(e){ 
                 if(e.target != __self.selectedYear){
-                  domStyle.set(e.target,{background:'pink'});
+                  if( !domClass.contains(e.target,'hasNoEvent')){
+                    domStyle.set(e.target,{background:'pink'});
+                  }
                 }
             }
           );
@@ -164,7 +171,9 @@ function(declare,
             'mouseout', 
             function(e){ 
                 if(e.target != __self.selectedYear){
-                  domStyle.set(e.target,{background:'lightblue'});
+                  if( !domClass.contains(e.target,'hasNoEvent')){
+                    domStyle.set(e.target,{background:'lightblue'});
+                  }
                 }
             }
           );
@@ -286,42 +295,46 @@ function(declare,
           for(var x=0; x< all_events.length; x++){
              date_array.push( all_events[x].event_date );
           }
-          
+
+          for(var x=0; x< all_events.length; x++){
+            array.forEach(query('.dojoTimeLineYearLineSpan'), 
+                          function(yearSpan){
+                            console.log(yearSpan.innerHTML);
+                            console.log(all_events[x].event_year);
+
+                            if(yearSpan.innerHTML == all_events[x].event_year){
+                                domClass.remove(yearSpan,'hasNoEvent');  
+                                domClass.add(yearSpan,'hasEvent');
+                                console.log("Background Changed");
+                            }else{
+                              if(! domClass.contains(yearSpan,'hasEvent') ){
+                                domClass.add(yearSpan,'hasNoEvent');
+                              }
+                            }
+
+                            /*
+                            else{
+                              domStyle.set(yearSpan,
+                                           {background   : "lightblue", 
+                                            borderRadius : "0px"
+                                           });
+                            }
+                            */
+            });
+          }
+
           domConstruct.create('div',
-                              {innerHTML : date_array}, 
+                              {innerHTML : date_array, 
+                               style     : "position   : relative; \
+                                            top        : 100px   ; \
+                                            left       : 20px    ; \
+                                            border     : solid 1px lightblue; \
+                                            background : lightgoldenrodyellow;\
+                                            max-width  : 80%;                 \
+                                           "
+                              }, 
                               dom.byId('addEventFormDiv'), 
                               'after');
-          
-          /*
-          var year        = jsondata.year;
-          var month       = jsondata.month; 
-          var monthIndex  = month-1;
-          var day         = jsondata.day; 
-          var verboseMonth = __self.verboseMonthList[monthIndex];
-          console.log("selected month is: " + verboseMonth);
-
-          array.forEach(query('.monthDiv'), 
-                        function(month){
-                          if(month.innerHTML == verboseMonth){
-                            
-                            domConstruct.create('img',
-                                                {style : 'height:6px; width:6px; margin:-1px; padding:0px;position:relative;top:-2px;', 
-                                                 src   : 'static/images/green-icon.png', 
-                                                 title : "Has Events "
-                                                },
-                                                month,
-                                                'last');
-                            
-                            domStyle.set(month,{borderRadius : "5px", 
-                                                border       : "solid green 2px", 
-                                                background   : "khakhi",
-                                                boxShadow    : "2px 2px 2px #aaa"
-                            });
-                            domAttr.set(month,{title: jsondata.title});
-                          }
-                        });
-        */
-
         }, 
         function(error){
           console.log("Error! Server is not accesible\nError Returned is: " + error);
@@ -466,7 +479,7 @@ function(declare,
                           if(__self.selectedYear){
                             console.log("Selected Year has been set already");
                             if(e.target != __self.selectedYear){
-                              domStyle.set(__self.selectedYear,{background:'oldlace'});
+                              domStyle.set(__self.selectedYear,{background:'lightblue'});
                             }
                           }
 
@@ -598,10 +611,12 @@ function(declare,
     },
     
     buildRendering : function(){
-          this.domNode  = domConstruct.create('div', {id    : "dojoTimeLineWidget", 
+          this.domNode  = domConstruct.create('div', {id    : "dojoTimeLineWidget",
+                                                      class : "dojoTimeLineWidget",
                                                       style : domStyle.get(dom.byId("dojoTimeLineWidgetContainer"),'style')
                                                     });
-//           console.log(this.domNode.scrollWidth);
+          this.dragPane  = new DragPane({id: 'dojoTimeLineWidget'},'dojoTimeLineWidget');
+          this.dragPane.startup();
           this.setTimeLineDateVars();
           this.setYearLine();
           this.inherited(arguments);
@@ -612,6 +627,7 @@ function(declare,
         // Binding the events and more DOMS to create ..
         console.log(this.yearNodeList);
         console.log(this.yearNodeList.length);
+        this._fetchEventsOnLoad("/dojotimeline/get_events");
         this.inherited(arguments);        
         console.log("Completed the PostCreate");
     }

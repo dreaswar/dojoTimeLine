@@ -8,8 +8,8 @@
 
 
         <!-- #FIXME Messes up the dojoTimeLine css .....-->
-        <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dojo/resources/dojo.css"/>
         <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dijit/themes/claro/claro.css"/>
+        <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dojo/resources/dojo.css"/>
 
 
         <style type="text/css">
@@ -58,7 +58,22 @@
             top           : 5%;
             left          : 5%;            
           }
+          
+          .hasEvent{
+            background: lightgoldenrodyellow !important;
+            border-radius: 5px;
+            border:solid 1px green;
+            box-shadow: 1px 2px 2px #aaa;
+            overflow:visible;
+          }
 
+          .hasNoEvent{
+            background: lightblue !important;
+            border-radius: 0px;
+            border:none;
+            box-shadow: none;
+            overflow:hidden;            
+          }
         </style>
 
           <script type="text/javascript">
@@ -92,16 +107,24 @@
                        "dojo/request",
                        "dojo/dom-form",
                        "dojo/dom-attr",
+                       "dojo/ready",
+                       "dijit/registry",
 
                        "dijit/layout/BorderContainer", 
                        "dijit/layout/TabContainer", 
                        "dijit/layout/AccordionContainer", 
                        "dijit/layout/ContentPane", 
+                       "dojox/layout/ContentPane",
                        "dijit/layout/AccordionPane",
-                        
+                       "dijit/form/Select",
+                       "dijit/form/Button",
+                       "dijit/Dialog",
+                       
 
                        'dojo/domReady!'],
-              function(dojoTimeLineWidget, parser, dom,on,JSON, request, domForm, domAttr){
+              function(dojoTimeLineWidget, parser, dom,on,JSON, request, domForm, domAttr, ready, registry){
+
+              ready(function(){
 
                 //Runs the dojoTimeLine....
                 console.log(dojoTimeLineWidget);
@@ -113,28 +136,71 @@
                    var urlToPost = domAttr.get(formObj,'action');
                    request.post(urlToPost,{data: formPost}).
                    then(function(json){ 
-                           alert("Good");
+                           console.log("Successfully Added.");
                            var jsondata = JSON.parse(json);
                            console.log(jsondata);
                            return false;
                         }, 
                         function(err){ 
-                           alert("Bad"); 
+                           console.log("ERROR! Could not add event"); 
                            return false;
                         }
                    );
                    console.log(formPost);
-//                   e.preventDefault();
-//                   alert("form submission will work soon ! ");
                    return false;
                 });
+
+                on(registry.byId('showHideYearsSelect'), 
+                   'change',
+                   function (evt){
+                      require(['dojo/_base/array'      ,
+                               'dojo/query'            ,
+                               'dojo/dom-style'        ,
+                               'dojo/dom'              ,
+                               'dojo/dom-class'        ,
+                               'dojo/dom-attr'         ,
+                               "dojo/NodeList-traverse"
+                               ], 
+                      function(array,
+                               query,
+                               domStyle,
+                               dom, 
+                               domClass, 
+                               domAttr){
+                        if(registry.byId('showHideYearsSelect').get('value') == 'with_events'){
+                          array.forEach(query('.dojoTimeLineYearLineSpan'),
+                                        function(node){
+                                            if( !domClass.contains(node,'hasEvent') ){
+                                              domStyle.set( node,{'display':'none'});
+                                              domStyle.set( query('.dojoTimeLineYearLineSpan').parent()[0],
+                                                           {width : domStyle.get( query(".dojoTimeLineWidget")[0], 
+                                                                                 'width'
+                                                                    ) 
+                                                           }
+                                              );
+                                            }
+                          });
+                        }
+                        else if(registry.byId('showHideYearsSelect').get('value') == 'all'){
+                          array.forEach( query('.dojoTimeLineYearLineSpan'),
+                                        function(node){
+                                          domStyle.set(node,{display:'inline'});
+                                          domStyle.set( query('.dojoTimeLineYearLineSpan').parent()[0],
+                                                           {width : 'auto'}
+                                          );
+                          });
+                        }
+                    });
+                });
+
+              });
                 
               });
           </script>
 
   </head>
 
-  <body id="claro">
+  <body class="claro">
     <!-- 
     
     #FIXME
@@ -163,25 +229,97 @@
     </div>
     -->
 
-  <div id="appContainer">
-    <div id="dojoTimeLineWidgetContainer">
+  <div id             = "appBorderContainer" 
+      data-dojo-type  = "dijit/layout/BorderContainer" 
+      style           = "height:100%; width:100%;"
+      data-dojo-props = "gutters:true, liveSplitters:false"
+      >
+
+    <div id              = "appCenterPane" 
+         data-dojo-type  = "dojox/layout/ContentPane" 
+         data-dojo-props = "region:'center',splitter:true">
+      
+      <div id="dojoTimeLineWidgetContainer">
     
+      </div>
+      
+      <div id="timeLineFilters"  style="position:relative; top: 20px; left: 10%; width: 30%; border: solid1px #aaa; margin-top: 20px; " >
+
+        <div>Show Years: <span data-dojo-type = "dijit/form/Select" 
+                                id             = "showHideYearsSelect">
+                          <option name  = "all"              
+                                  value = "all"> 
+                              All
+                          </option>
+                          <option name  = "only_with_events" 
+                                  value = "with_events"> 
+                              With Events 
+                          </option>
+                        </span>
+        </div>
+
+      </div>
+
+      <div id="addEventFormDiv" style="position:relative; top: 20px; margin-top: 20px">
+        <form action="{{url_for('add_event')}}"  method = "post" id = "addEventForm">
+          <table> 
+            <tr>
+              <td> Title </td> 
+              <td>
+                <input type            = "text" 
+                      data-dojo-type  = "dijit/form/ValidationTextBox" 
+                      data-dojo-props = "required:true" 
+                      value           = "" 
+                      name            = "title" >
+              </td>
+            </tr>
+            <tr>
+              <td> Description </td>
+              <td>
+                  <input data-dojo-type   = "dijit/form/SimpleTextarea" 
+                        data-dojo-props  = "required:true"
+                        style            = "width: 250px"
+                        name             = "description" > 
+                  </input>
+              </td>
+            </tr>
+            <tr>
+              <td> Date </td>
+              <td><input data-dojo-type  = "dijit/form/DateTextBox" 
+                         data-dojo-props = "constraints:{datePattern:'yyyy-mm-dd'}"
+                         type            = "text" 
+                         value           = "2013-05-06" 
+                         name            = "event_date">
+              </td>
+            </tr>
+            
+            <tr> 
+              <td>
+                <input type           = "submit" 
+                        data-dojo-type = "dijit/form/Button"
+                        data-dojo-props= "label:'Add Event'"
+                        value          = "Add Event" >
+              </td>
+            </tr>
+          </table>
+      </form>
+
+      </div>
+
+
     </div>
 
-    
-    <div id="addEventFormDiv" style="position:relative; top: 20px; margin-top: 20px">
-      <form action="{{url_for('add_event')}}"  method = "post" id = "addEventForm">
-       <dl> 
-       <dt> Title <input type= "text" value = "" name = "title" id= "add_event_title">
-       <dd> Desc. <textarea value = "" name = "description" id = "add_event_description rows="20" cols="20"> </textarea>
-       <dt> Date  <input type="text" value="" name ="event_date" id="add_event_date">
-       <dd> <input type="submit" value="Add Event" id="add_event_form_submit_button">
-       </dl>
-     </form>
-    
-    </div>
+    <div id              = "appBottomContentPane" 
+         data-dojo-type  = "dojox/layout/ContentPane" 
+         data-dojo-props = "region:'bottom',splitter:true"
+         style           = 'width:100%; height:4em; margin-bottom:2px;'>
 
+
+    </div>
+ 
+  </div>
+ 
  </div>
-  </body>
+</body>
 
 </html>
