@@ -6,8 +6,6 @@
           <meta charset="utf-8">
           <title>Dojo Timeline</title>
 
-
-        <!-- #FIXME Messes up the dojoTimeLine css .....-->
         <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dijit/themes/claro/claro.css"/>
         <link type="text/css" rel="stylesheet" href="static/scripts/lib/dojo1.8.3/dojo/resources/dojo.css"/>
 
@@ -46,10 +44,10 @@
 
 
          #appContainer{
-           position: absolute;
-           top     : 0;
-           width   : 100%;
-           height  : 100%;
+           position : absolute;
+           top      : 0;
+           width    : 100%;
+           height   : 100%;
            margin   : 0; 
           }
 
@@ -59,21 +57,23 @@
             left          : 5%;            
           }
 
-          .hasEvent{
-            background: lightgoldenrodyellow !important;
-            border-radius: 5px;
-            border:solid 1px green;
-            box-shadow: 1px 2px 2px #aaa;
-            overflow:visible;
+          .hasEvent,
+          .monthHasEvent{
+            background     : lightgoldenrodyellow !important;
+            border-radius  : 5px;
+            border         : solid 1px green;
+            box-shadow     : 1px 2px 2px #aaa;
+            overflow       : visible;
           }
 
-          .hasNoEvent{
-            background: lightblue !important;
-            border-radius: 0px;
-            border:none;
-            box-shadow: none;
-            overflow:hidden;            
-            opacity : 0.4;
+          .hasNoEvent, 
+          .monthHasNoEvent{
+            background    : lightblue !important;
+            border-radius : 0px;
+            border        : none;
+            box-shadow    : none;
+            overflow      : hidden;            
+            opacity       : 0.4;
           }
 
         </style>
@@ -121,7 +121,6 @@
                        "dijit/form/Select",
                        "dijit/form/Button",
                        "dijit/Dialog",
-                       
 
                        'dojo/domReady!'],
               function(dojoTimeLineWidget, parser, dom,on,JSON, request, domForm, domAttr, ready, registry){
@@ -205,33 +204,6 @@
   </head>
 
   <body class="claro">
-    <!-- 
-    
-    #FIXME
-    
-    Messes up the CSS of the dojoTimeLine div and innner divs... 
-    Needs a better solution if this dosent display well inside of a Dijit Layout. 
-    
-    Incase this works, put the dojoTimeLine DIV inside the dojoTimeLineContainer DIV 
-    as the first child
-
-    <div id             = "appBorderContainer" 
-         data-dojo-type = "dijit/layout/BorderContainer" 
-         style          = "height:100%; width:100%;">
-    
-    <div id              = "appCenterPane" 
-         data-dojo-type  = "dojox/layout/ContentPane" 
-         data-dojo-props = "region:'center',splitter:true">
-
-    </div>
-    
-    <div id              = "dojoTimeLineContainer" 
-         data-dojo-type  = "dojox/layout/ContentPane" 
-         data-dojo-props = "region:'bottom',splitter:true"
-         style           = 'width:100%; height:20em; margin-bottom:10px;'>
-      
-    </div>
-    -->
 
   <div id             = "appBorderContainer" 
       data-dojo-type  = "dijit/layout/BorderContainer" 
@@ -290,9 +262,9 @@
             <tr>
               <td> Date </td>
               <td><input data-dojo-type  = "dijit/form/DateTextBox" 
-                         data-dojo-props = "constraints:{datePattern:'yyyy-mm-dd'}"
+                         data-dojo-props = "constraints:{datePattern:'yyyy-MM-dd'}"
                          type            = "text" 
-                         value           = "2013-05-06" 
+                         value           = "" 
                          name            = "event_date">
               </td>
             </tr>
@@ -317,7 +289,8 @@
          data-dojo-type  = "dojox/layout/ContentPane" 
          data-dojo-props = "region:'bottom',splitter:true"
          style           = 'width:100%; height:4em; margin-bottom:2px;'>
-
+         
+         
 
     </div>
  

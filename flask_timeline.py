@@ -102,7 +102,8 @@ def get_events():
         else:
           mon_dict[e_mon] = [e_d]
     
-      event = dict(title       = row[1].strip(), 
+      event = dict(pk          = int(row[0]),
+                   title       = row[1].strip(), 
                    description = row[2].strip(), 
                    event_date  = row[3].replace(' ',''), 
                    event_year  = int( row[3].split('-')[0].strip() ), 

@@ -26,7 +26,10 @@ require([
     "dijit/_TemplatedMixin" ,
     "dojox/layout/DragPane" ,
     
-    "dojo/store/Memory"
+    "dojo/store/Memory",
+
+    "dojo/NodeList-data",
+    "dojo/NodeList-traverse"
 
 ], 
 function(declare, 
@@ -103,7 +106,47 @@ function(declare,
           }
         },
 
-      setYearLine: function (){
+      _dummyEvents     : [{ date         : new Date(1,12,2012)    ,
+                              title        : "First Event"          ,
+                              description  : "What an Inauguration" ,
+                              absoluteUrl  : "/"
+                          },
+                          { date         : new Date(1,01,2013)       ,
+                              title        : "Second Event"             ,
+                              description  : "This is the second event" ,
+                              absoluteUrl  : "/"
+                          },
+                          { date         : new Date(1,02,2013)    ,
+                              title        : "Watch !"          ,
+                              description  : "Bought a Fossil watch" ,
+                              absoluteUrl  : "/"
+                          },
+                          { date         : new Date(3,01,2013)    ,
+                              title        : "Twitter handle !"          ,
+                              description  : "Got a twitter handle" ,
+                              absoluteUrl  : "/"
+                          },
+                          { date         : new Date(3,12,2012)    ,
+                              title        : "Bought a House !"          ,
+                              description  : "What an Inauguration" ,
+                              absoluteUrl  : "/"
+                          }
+      ],
+
+      setInactiveMonthStyle: function (){
+                              array.forEach(query('.monthDiv'),
+                                            function(div){ 
+                                              domStyle.set(div,
+                                                          {background   : 'lightgoldenrodyellow',
+                                                            color       : 'black', 
+                                                            display     : 'inline-block',
+                                                            whiteSpace  : 'nowrap'
+                                                          }
+                                              )
+                                            });
+      },
+
+     setYearLine: function (){
                       console.log("Starting the setYearLine Function");
 
                       __self = this;
@@ -162,168 +205,323 @@ function(declare,
                     this.__setBinders();
       },
 
-    __setBinders: function(){
+      __setBinders: function(){
 
-        for (var y=0; y< __self.yearNodeList.length; y++){
-          on(dom.byId(__self.yearNodeList[y]), 
-            'mouseover', 
-            function(e){ 
-                if(e.target != __self.selectedYear){
-                  if( !domClass.contains(e.target,'hasNoEvent')){
-                    domStyle.set(e.target,{background:'pink'});
+          for (var y=0; y< __self.yearNodeList.length; y++){
+            on(dom.byId(__self.yearNodeList[y]), 
+              'mouseover', 
+              function(e){ 
+                  if(e.target != __self.selectedYear){
+                    if( !domClass.contains(e.target,'hasNoEvent')){
+                      domStyle.set(e.target,{background:'pink'});
+                    }
                   }
-                }
-            }
-          );
+              }
+            );
 
-          on(dom.byId(__self.yearNodeList[y]), 
-            'mouseout', 
-            function(e){ 
-                if(e.target != __self.selectedYear){
-                  if( !domClass.contains(e.target,'hasNoEvent')){
-                    domStyle.set(e.target,{background:'lightblue'});
+            on(dom.byId(__self.yearNodeList[y]), 
+              'mouseout', 
+              function(e){ 
+                  if(e.target != __self.selectedYear){
+                    if( !domClass.contains(e.target,'hasNoEvent')){
+                      domStyle.set(e.target,{background:'lightblue'});
+                    }
                   }
-                }
-            }
-          );
-          
-          on(dom.byId(__self.yearNodeList[y]),'click', __self.onYearNodeClick);
-        }
-    },
-
-    animateOnDateSelect: function(e){
-        var dateContainerCount     = query('.dateContainer').length;
-
-        var currentContainerNumber;
-
-        var divsBefore = [];
-        var divsAfter  = [];
-
-        function xOfDateContainer(x){
-          return domGeom.position(dom.byId('dateContainer_'+x)).x;
-        }
-
-        var wOfe   = domGeom.position(e).w;
-        var xOfe   = domGeom.position(e).x;
-
-        var xOfDojoTimeLine   = domGeom.position(__self.domNode).x;
-        var hOfDojoTimeLine   = domGeom.position(__self.domNode).h;      
-        var wOfDojoTimeLine   = domGeom.position(__self.domNode).w;
-
-        var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).w;
-        var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).h;
-
-        array.forEach(query('.chosenDate'), function(node){
-          if (node != e) {
-            domClass.remove(node, 'chosenDate');
-            baseFx.animateProperty({node       : node,
-                                    properties : {width: wOfe, background:"white", color:"#aaa"}, 
-                                    duration   : 800
-                        }).play();
+              }
+            );
+            
+            on(dom.byId(__self.yearNodeList[y]),'click', __self.onYearNodeClick);
           }
-        });
-        domClass.add(e,'chosenDate');
-        baseFx.animateProperty({node     : e,
-                              properties : {width: wOfe*20 ,background  : "#ffc" , color:"#aaa"}, 
-                              duration   : 800
-                        }).play();
-    },
+      },
 
-    _dummyEvents     : [{ date         : new Date(1,12,2012)    ,
-                             title        : "First Event"          ,
-                             description  : "What an Inauguration" ,
-                             absoluteUrl  : "/"
-                        },
-                        { date         : new Date(1,01,2013)       ,
-                             title        : "Second Event"             ,
-                             description  : "This is the second event" ,
-                             absoluteUrl  : "/"
-                        },
-                        { date         : new Date(1,02,2013)    ,
-                             title        : "Watch !"          ,
-                             description  : "Bought a Fossil watch" ,
-                             absoluteUrl  : "/"
-                        },
-                        { date         : new Date(3,01,2013)    ,
-                             title        : "Twitter handle !"          ,
-                             description  : "Got a twitter handle" ,
-                             absoluteUrl  : "/"
-                        },
-                        { date         : new Date(3,12,2012)    ,
-                             title        : "Bought a House !"          ,
-                             description  : "What an Inauguration" ,
-                             absoluteUrl  : "/"
-                        }
-    ],
+      animateOnDateSelect: function(e){
+          var dateContainerCount     = query('.dateContainer').length;
 
-    _fetchEventsOnLoad : function(url){
-        // This will run on load after widget instantiation to fetch a list of events datewise from the server as JSON
-        // This will then display the events on the calendar
-      request(url).
-      then(
-        function(json){
-          var jsondata    = JSON.parse(json);
-          var all_events  = jsondata.all_events; 
+          var currentContainerNumber;
 
-          var date_array  = new Array();
-          var year_array  = new Array();
-          var month_array = new Array();
-          var day_array   = new Array();
-          var date_map    = new Object();
+          var divsBefore = [];
+          var divsAfter  = [];
 
-          var eventStore  = new Memory({data: [all_events], idProperty: 'event_date'});
-          console.log(eventStore);
-
-          for(var x=0; x< all_events.length; x++){
-             date_array.push( all_events[x].event_date );
+          function xOfDateContainer(x){
+            return domGeom.position(dom.byId('dateContainer_'+x)).x;
           }
 
-          for(var x=0; x< all_events.length; x++){
-            array.forEach(query('.dojoTimeLineYearLineSpan'), 
-                          function(yearSpan){
-                            if(yearSpan.innerHTML == all_events[x].event_year){
-                                domClass.remove(yearSpan,'hasNoEvent');  
-                                domClass.add(yearSpan,'hasEvent');
-                                if (domStyle.get(yearSpan,'display') == 'none'){
-                                  domStyle.set(yearSpan,'display','inline');
+          var wOfe   = domGeom.position(e).w;
+          var xOfe   = domGeom.position(e).x;
+
+          var xOfDojoTimeLine   = domGeom.position(__self.domNode).x;
+          var hOfDojoTimeLine   = domGeom.position(__self.domNode).h;      
+          var wOfDojoTimeLine   = domGeom.position(__self.domNode).w;
+
+          var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).w;
+          var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).h;
+
+          array.forEach(query('.chosenDate'), function(node){
+            if (node != e) {
+              domClass.remove(node, 'chosenDate');
+              baseFx.animateProperty({node       : node,
+                                      properties : {width: wOfe, background:"white", color:"#aaa"}, 
+                                      duration   : 800
+                          }).play();
+            }
+          });
+          domClass.add(e,'chosenDate');
+          baseFx.animateProperty({node     : e,
+                                properties : {width: wOfe*20 ,background  : "#ffc" , color:"#aaa"}, 
+                                duration   : 800
+                          }).play();
+      },
+
+      _fetchEventsOnLoad : function(url){
+          // This will run on load after widget instantiation to fetch a list of events datewise from the server as JSON
+          // This will then display the events on the calendar
+        request(url).
+        then(
+          function(json){
+            var jsondata    = JSON.parse(json);
+            var all_events  = jsondata.all_events; 
+
+            var date_array  = new Array();
+            var year_array  = new Array();
+            var month_array = new Array();
+            var day_array   = new Array();
+            var date_map    = new Object();
+
+            __self.eventStore  = new Memory({data: all_events, idProperty: 'pk'});
+
+            for(var x=0; x< all_events.length; x++){
+              var e_pk       = all_events[x].pk; 
+              var e_day      = all_events[x].event_day;
+              var e_month    = all_events[x].event_month;
+              var e_year     = all_events[x].event_year;
+
+              var e_date_obj = new Date(e_year, e_month, e_day);
+              date_array.push( e_date_obj );
+
+              var storeItem     = __self.eventStore.get(e_pk);
+              storeItem.dateObj = e_date_obj;
+              __self.eventStore.put(storeItem);
+
+            }
+
+            console.log(__self.eventStore);
+
+            //query('.hasEvent').removeData();
+
+            for(var x=0; x< all_events.length; x++){
+              array.forEach(query('.dojoTimeLineYearLineSpan'), 
+                            function(yearSpan){
+                              if(yearSpan.innerHTML == all_events[x].event_year){
+                                  domClass.remove(yearSpan,'hasNoEvent');  
+                                  domClass.add(yearSpan,'hasEvent');
+/*
+                                  __self.eventStore.
+                                        query({ event_year: new Number(yearSpan.innerHTML) }, 
+                                              { sort:[{ attribute  :"event_year", 
+                                                      descending : true
+                                                      }
+                                                    ]
+                                              }
+                                        ).forEach(function(evtStoreItem){
+                                                      query('.hasEvent').data({dateObj:evtStoreItem.dateObj})
+                                          });
+                                          console.log(query('.hasEvent').data('dateObj'));
+*/
+                                  if (domStyle.get(yearSpan,'display') == 'none'){
+                                    domStyle.set(yearSpan,'display','inline');
+                                  }
+                              }else{
+                                if(! domClass.contains(yearSpan,'hasEvent') ){
+                                  domClass.add(yearSpan,'hasNoEvent');
                                 }
-                            }else{
-                              if(! domClass.contains(yearSpan,'hasEvent') ){
-                                domClass.add(yearSpan,'hasNoEvent');
                               }
-                            }
-            });
-          }
-          /*
-          domConstruct.create('div',
-                              {innerHTML : date_array, 
-                               style     : "position   : relative; \
-                                            top        : 100px   ; \
-                                            left       : 20px    ; \
-                                            border     : solid 1px lightblue; \
-                                            background : lightgoldenrodyellow;\
-                                            max-width  : 80%;                 \
-                                           "
-                              }, 
-                              dom.byId('addEventFormDiv'), 
-                              'after');
-          */
-        }, 
-        function(error){
-          console.log("Error! Server is not accesible\nError Returned is: " + error);
-        }
-      );
-    },
-    
-    _fetchEventsOnUpdate: function(){
-      // This is called on a update on a data elsewhere so that the timeline updates itself
-    },
-    
-    onMonthNodeClick: function(e){
+              });
+            }
 
-                  String.prototype.capitalize = function() {
-                    return this.charAt(0).toUpperCase() + this.slice(1);
-                  }
+            /*
+            domConstruct.create('div',
+                                {innerHTML : date_array, 
+                                style     : "position   : relative; \
+                                              top        : 100px   ; \
+                                              left       : 20px    ; \
+                                              border     : solid 1px lightblue; \
+                                              background : lightgoldenrodyellow;\
+                                              max-width  : 80%;                 \
+                                            "
+                                }, 
+                                dom.byId('addEventFormDiv'), 
+                                'after');
+            */
+          }, 
+          function(error){
+            console.log("Error! Server is not accesible\nError Returned is: " + error);
+          }
+        );
+      },
+      
+      _fetchEventsOnUpdate: function(){
+        // This is called on a update on a data elsewhere so that the timeline updates itself
+      },
+
+      onYearNodeClick: function(e){
+                          if(__self.selectedYear){
+                            if(e.target != __self.selectedYear){
+                              domStyle.set(__self.selectedYear,{background:'lightblue'});
+                            }
+                          }
+
+                          domStyle.set(e.target,{background:'lightblue'});
+                          __self.selectedYear = e.target;
+
+                          __self.selectedYear.eventSet = __self.eventStore.query({event_year: e.target.innerHTML });
+
+                          if( !__self.selectedYearDomNode){
+                            __self.selectedYearDomNode = domConstruct.create('div',
+                                                                            { style : "white-space    : nowrap;           \
+                                                                                      overflow-x     : auto;             \
+                                                                                      overflow-y     : hidden;           \
+                                                                                      display        : inline-block      \
+                                                                                      height         : 1em;              \
+                                                                                      margin         : 1px 0px 3px 1px;  \
+                                                                                      padding        : 2px;              \
+                                                                                      background     : lightblue;        \
+                                                                                      box-shadow     : -1px 2px 3px #aaa;\
+                                                                                      text-align     : center;           \
+                                                                                      vertical-align : middle;           \
+                                                                                      position       : relative;         \
+                                                                                      top            : 80%;              \
+                                                                                      opacity        : 0.7;              \
+                                                                                      left           : 0px; "
+                                                                          },
+                                                                          __self.yearLineDomNode,
+                                                                          'before');
+                          }
+
+                          domStyle.set(__self.yearLineDragPane,{display   : 'none'});
+                          domStyle.set(__self.yearLineDomNode,{display   : 'none'});
+                          domStyle.set(__self.domNode,{overflowX : 'hidden'});
+                          domStyle.set(__self.selectedYearDomNode,{width: "99.4%",overflow:'hidden',display:'block'});
+
+                          __self.selectedYearDomNode.innerHTML = e.target.innerHTML;
+
+                          __self.showYearLineDomNode = domConstruct.create('img',{src    : 'static/images/arrow_down.png',
+                                                                                width  : '12px', 
+                                                                                alt    : 'Show Years',
+                                                                                title  : 'Show Years',
+                                                                                height : '12px',
+                                                                                margin : '2px'
+                                                                                },
+                                                                            __self.selectedYearDomNode,
+                                                                          'last');
+
+                          function createMonthListDiv(){
+                              __self.monthListDivDomNode= domConstruct.create('div',
+                                                                          {style : "height          : 0.9em;             \
+                                                                                    margin          : 1px 0px 1px 0px;   \
+                                                                                    padding         : 0px 0px 6px 0px;   \
+                                                                                    background      : lightgoldenrodyellow;\
+                                                                                    box-shadow      : -1px 2px 3px #aaa; \
+                                                                                    text-align      : center;            \
+                                                                                    vertical-align  : middle;            \
+                                                                                    position        : relative;          \
+                                                                                    top             : 80%;               \
+                                                                                    white-space     : nowrap;            \
+                                                                                    opacity         : .7 ;               \
+                                                                                    display         : inline-block       \
+                                                                                    overflow-x      : auto;              \
+                                                                                    overflow-y      : hidden;            \
+                                                                                    left            : 0px; "
+                                                                          },
+                                                                          __self.selectedYearDomNode,
+                                                                        'before');
+
+                            var monthListHtml = '';
+
+                            for(var i=1; i< __self.verboseMonthList.length; i++){
+                              var month = __self.verboseMonthList[i-1];
+                              var thisMonth = domConstruct.create('span',
+                                                {id    : domAttr.get(__self.monthListDivDomNode,'id')+'_monthDiv_'+ month, 
+                                                  class : 'monthDiv',
+                                                  style : "margin         : 0px 5px 0px 5px; \
+                                                          padding        : 1px;             \
+                                                          text-align     : center;          \
+                                                          vertical-align : middle;          \
+                                                          font-family    : Helvetica,sans-serif, Tahoma, Ubuntu; \
+                                                          font-size      : 10px;",
+                                                innerHTML : month
+                                                },
+                                                __self.monthListDivDomNode,
+                                              'last');
+                           }
+
+                          on(query('.monthDiv'),'click',__self.onMonthNodeClick);
+
+                          }
+                          
+                          if( !__self.monthListDivDomNode ){
+                                createMonthListDiv();
+                          }else{
+                            domConstruct.destroy(__self.monthListDivDomNode);
+                            createMonthListDiv();
+                            //domStyle.set(__self.monthListDivDomNode,{display:'block'});
+                            //__self.setInactiveMonthStyle();
+                          }
+
+                          array.forEach(query('.monthDiv'), function(mDiv){
+                            for(var mI=0; mI< __self.selectedYear.eventSet.length; mI++){
+                              if(__self.selectedYear.eventSet[mI].event_month == (__self.verboseMonthList.indexOf(mDiv.innerHTML)+1) ) {
+                                console.log("Retrieving the month div event: ")
+                                console.log(__self.selectedYear.eventSet[mI]);
+                                console.log(__self.verboseMonthList.indexOf(mDiv.innerHTML) );
+                                console.log(mDiv);
+                                if( domClass.contains(mDiv,'monthHasNoEvent') ){
+                                  domClass.remove(mDiv,'monthHasNoEvent');
+                                };
+                                domClass.add(mDiv,'monthHasEvent');
+                              }else{
+                                if( domClass.contains(mDiv,'monthHasEvent') ){
+                                  domClass.remove(mDiv,'monthHasEvent');
+                                }
+                                domClass.add(mDiv,'monthHasNoEvent');
+                              }
+                            }  
+                          });
+
+                          on( __self.showYearLineDomNode,'click',__self.onShowYearLineDomNodeClick);
+    },
+
+    onShowYearLineDomNodeClick: function(e){
+                                    
+                                    domStyle.set( __self.yearLineDragPane,
+                                                  {display:'block'} 
+                                    );                               
+                                    domStyle.set( __self.yearLineDomNode,
+                                                  {display:'inline-block'} 
+                                    ); 
+                                    /*
+                                    domStyle.set( __self.yearLineDomNode,
+                                                  {overflowX:'auto'} 
+                                    );
+                                    */
+                                    domStyle.set( __self.selectedYearDomNode,
+                                                  {display:'none'} 
+                                    );
+                                    domStyle.set( __self.monthListDivDomNode,
+                                                  {display:'none'} 
+                                    );
+                                    domStyle.set( __self.dateContainerDomNode,
+                                                  {display:'none'} 
+                                    );
+                                    domStyle.set( __self.chosenDateDomNode,
+                                                  {display:'none'} 
+                                    );
+    },
+
+      onMonthNodeClick: function(e){
+
+                String.prototype.capitalize = function() {
+                  return this.charAt(0).toUpperCase() + this.slice(1);
+                }
 
                 __self.selectedMonth = e.target;
 
@@ -361,9 +559,7 @@ function(declare,
                                                                 __self.domNode,
                                                                 0
                                               );
-//                 console.log("Created a single dateContainer");
 
-//                 console.log("About to Create all the individual Date Containers..");
                 for(var i=1; i <= Number(daysInMonth); i++){
                   domConstruct.create('div',
                                     {id        : domAttr.get(__self.domNode,'id')+'_dateContainer_'+i,
@@ -388,7 +584,6 @@ function(declare,
                                     'last'
                   );
                   on(query('.dateContainer'), 'click', __self.onDateNodeClick );
-//                   console.log("Bound the event on dateContainer");
                 }
       },
 
@@ -403,10 +598,9 @@ function(declare,
                                   });
 
                     domStyle.set(e.target,{background:'#ffe'});
-                    
-//                     console.log("About to Bind the Animation to date selectors...");
+
                     __self.animateOnDateSelect(e.target);
-                    
+
                     __self._fetchEventsOnLoad("/dojotimeline/get_events");
 
                     var chosenDate = new Date(__self.year, __self.month,__self.day);
@@ -432,184 +626,22 @@ function(declare,
                     }else{
                         __self.chosenDateDomNode.innerHTML = chosenDate;
                     }
-      },
-
-      setInactiveMonthStyle: function (){
-                              array.forEach(query('.monthDiv'),
-                                            function(div){ 
-                                              domStyle.set(div,
-                                                          {background   : 'lightgoldenrodyellow',
-                                                            color       : 'black', 
-                                                            display     : 'inline-block',
-                                                            whiteSpace  : 'nowrap'
-                                                          }
-                                              )
-                                            });
-      },
-
-      onYearNodeClick: function(e){
-//                           console.log(__self);
-                          if(__self.selectedYear){
-//                             console.log("Selected Year has been set already");
-                            if(e.target != __self.selectedYear){
-                              domStyle.set(__self.selectedYear,{background:'lightblue'});
-                            }
-                          }
-
-//                           console.log("Trying to set clicked target to lightblue");
-                          domStyle.set(e.target,{background:'lightblue'});
-                          __self.selectedYear = e.target;
-
-                          if( !__self.selectedYearDomNode){
-                            //var timeLineWidth = this.domNode.scrollWidth.toString()+"px";
-//                             console.log("There is no selectedYearDomNode so far.. creating one..");
-                            __self.selectedYearDomNode = domConstruct.create('div',
-                                                                            { style : "white-space    : nowrap;           \
-                                                                                      overflow-x     : auto;             \
-                                                                                      overflow-y     : hidden;           \
-                                                                                      display        : inline-block      \
-                                                                                      height         : 1em;              \
-                                                                                      margin         : 1px 0px 3px 1px;  \
-                                                                                      padding        : 2px;              \
-                                                                                      background     : lightblue;        \
-                                                                                      box-shadow     : -1px 2px 3px #aaa;\
-                                                                                      text-align     : center;           \
-                                                                                      vertical-align : middle;           \
-                                                                                      position       : relative;         \
-                                                                                      top            : 80%;              \
-                                                                                      opacity        : 0.7;              \
-                                                                                      left           : 0px; "
-                                                                          },
-                                                                          __self.yearLineDomNode,
-                                                                          'before');
-                          }
-
-//                           console.log("Trying to set Cascading changes in style to yearLineDomNode, domNode, and selectedYearDomNode");
-//                           console.log(__self);
-//                           console.log(__self.selectedYearDomNode);
-//                           console.log(__self.yearLineDomNode);
-//                           console.log(__self.domNode);
-
-                          domStyle.set(__self.yearLineDragPane,{display   : 'none'});
-                          domStyle.set(__self.yearLineDomNode,{display   : 'none'});
-                          domStyle.set(__self.domNode,{overflowX : 'hidden'});
-                          domStyle.set(__self.selectedYearDomNode,{width: "99.4%",overflow:'hidden',display:'block'});
-//                           console.log("Cascading changes in style to yearLineDomNode, domNode, and selectedYearDomNode set..");
-
-                          __self.selectedYearDomNode.innerHTML = e.target.innerHTML;
-
-                          __self.showYearLineDomNode = domConstruct.create('img',{src    : 'static/images/arrow_down.png',
-                                                                                width  : '12px', 
-                                                                                alt    : 'Show Years',
-                                                                                title  : 'Show Years',
-                                                                                height : '12px',
-                                                                                margin : '2px'
-                                                                                },
-                                                                            __self.selectedYearDomNode,
-                                                                          'last');
-
-//                           __self.setInactiveMonthStyle();
-
-                          if( !__self.monthListDivDomNode ){
-
-                            __self.monthListDivDomNode= domConstruct.create('div',
-                                                                          {style : "height          : 0.9em;             \
-                                                                                    margin          : 1px 0px 1px 0px;   \
-                                                                                    padding         : 0px 0px 6px 0px;   \
-                                                                                    background      : lightgoldenrodyellow;\
-                                                                                    box-shadow      : -1px 2px 3px #aaa; \
-                                                                                    text-align      : center;            \
-                                                                                    vertical-align  : middle;            \
-                                                                                    position        : relative;          \
-                                                                                    top             : 80%;               \
-                                                                                    white-space     : nowrap;            \
-                                                                                    opacity         : .7 ;               \
-                                                                                    display         : inline-block       \
-                                                                                    overflow-x      : auto;              \
-                                                                                    overflow-y      : hidden;            \
-                                                                                    left            : 0px; "
-                                                                          },
-                                                                          __self.selectedYearDomNode,
-                                                                        'before');
-
-                            var monthListHtml = '';
-
-                            for(var i=0; i< __self.verboseMonthList.length; i++){
-                              var month = __self.verboseMonthList[i];
-                              domConstruct.create('span',
-                                                {id    : domAttr.get(__self.monthListDivDomNode,'id')+'_monthDiv_'+ month, 
-                                                  class : 'monthDiv',
-                                                  style : "margin         : 0px 5px 0px 5px; \
-                                                          padding        : 1px;             \
-                                                          text-align     : center;          \
-                                                          vertical-align : middle;          \
-                                                          font-family    : Helvetica,sans-serif, Tahoma, Ubuntu; \
-                                                          font-size      : 10px;",
-                                                innerHTML : month
-                                                },
-                                                __self.monthListDivDomNode,
-                                              'last');
-                            }
-
-//                             console.log("About to Bind the event on monthDiv click");
-                            on(query('.monthDiv'),'click',__self.onMonthNodeClick);
-                          }else{
-                            domStyle.set(__self.monthListDivDomNode,{display:'block'});
-                            __self.setInactiveMonthStyle();
-                          }
-
-
-                          on( __self.showYearLineDomNode,'click',__self.onShowYearLineDomNodeClick);
-//                           console.log("Bound the event on showYearLineDomNode click..");
-      },
-
-    onShowYearLineDomNodeClick: function(e){
-                                    
-                                    domStyle.set( __self.yearLineDragPane,
-                                                  {display:'block'} 
-                                    );                               
-                                    domStyle.set( __self.yearLineDomNode,
-                                                  {display:'inline-block'} 
-                                    ); 
-                                    /*
-                                    domStyle.set( __self.yearLineDomNode,
-                                                  {overflowX:'auto'} 
-                                    );
-                                    */
-                                    domStyle.set( __self.selectedYearDomNode,
-                                                  {display:'none'} 
-                                    );
-                                    domStyle.set( __self.monthListDivDomNode,
-                                                  {display:'none'} 
-                                    );
-                                    domStyle.set( __self.dateContainerDomNode,
-                                                  {display:'none'} 
-                                    );
-                                    domStyle.set( __self.chosenDateDomNode,
-                                                  {display:'none'} 
-                                    );
     },
-    
+
     buildRendering : function(){
           this.domNode  = domConstruct.create('div', {id    : "dojoTimeLineWidget",
                                                       class : "dojoTimeLineWidget",
                                                       style : domStyle.get(dom.byId("dojoTimeLineWidgetContainer"),'style')
                                                     });
-//        this.dragPane  = new DragPane({id: 'dojoTimeLineWidget'},'dojoTimeLineWidget');
-//        this.dragPane.startup();
           this.setTimeLineDateVars();
           this.setYearLine();
           this.inherited(arguments);
-//        console.log("Completed the Rendering");
     },
 
     postCreate    : function(){
       // Binding the events and more DOMS to create ..
-//      console.log(this.yearNodeList);
-//      console.log(this.yearNodeList.length);
         this._fetchEventsOnLoad("/dojotimeline/get_events");
         this.inherited(arguments);        
-//      console.log("Completed the PostCreate");
     }
 
   });
