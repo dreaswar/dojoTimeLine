@@ -58,23 +58,43 @@
           }
 
           .hasEvent,
-          .monthHasEvent{
+          .deSelectedMonth.monthHasEvent{
             background     : lightgoldenrodyellow !important;
             border-radius  : 5px;
-            border         : solid 1px green;
+            border         : solid 2px green;
             box-shadow     : 1px 2px 2px #aaa;
             overflow       : visible;
+            padding        : 3px;
+            color          : olive;
+            font-family    : Helvetica, sans-serif, Tahoma, Ubuntu;
+            font-weight    : bold;
           }
 
           .hasNoEvent, 
-          .monthHasNoEvent{
+          .deSelectedMonth.monthHasNoEvent{
             background    : lightblue !important;
-            border-radius : 0px;
-            border        : none;
+            border-radius : 5px;
+            border        : solid 1px #ddd;
             box-shadow    : none;
-            overflow      : hidden;            
-            opacity       : 0.4;
+            overflow      : visible;            
+            opacity       : 0.65;
+            padding       : 3px;
+            font-family   : Helvetica, sans-serif, Tahoma, Ubuntu;
+            font-weight   : normal;
           }
+
+        .selectedMonth.monthHasEvent,
+        .selectedMonth.monthHasNoEvent{
+          background     : navy !important;
+          border-radius  : 5px;
+          border         : solid 2px white;
+          box-shadow     : 1px 2px 2px #aaa;
+          overflow       : visible;
+          padding        : 3px;
+          color          : white !important;
+          font-family    : Helvetica, sans-serif, Tahoma, Ubuntu;
+          font-weight    : bold;
+        }
 
         </style>
 

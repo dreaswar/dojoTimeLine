@@ -375,11 +375,14 @@ function(declare,
 
                           __self.selectedYear.eventSet = __self.eventStore.query({event_year: e.target.innerHTML });
 
+                          console.log("Listing the Memory Store query for the Year: ");
+                          console.log(__self.selectedYear.eventSet);
+                          
                           if( !__self.selectedYearDomNode){
                             __self.selectedYearDomNode = domConstruct.create('div',
-                                                                            { style : "white-space    : nowrap;           \
+                                                                            { style : "white-space    : nowrap;          \
                                                                                       overflow-x     : auto;             \
-                                                                                      overflow-y     : hidden;           \
+                                                                                      overflow-y     : visible;          \
                                                                                       display        : inline-block      \
                                                                                       height         : 1em;              \
                                                                                       margin         : 1px 0px 3px 1px;  \
@@ -429,7 +432,7 @@ function(declare,
                                                                                     opacity         : .7 ;               \
                                                                                     display         : inline-block       \
                                                                                     overflow-x      : auto;              \
-                                                                                    overflow-y      : hidden;            \
+                                                                                    overflow-y      : visible;            \
                                                                                     left            : 0px; "
                                                                           },
                                                                           __self.selectedYearDomNode,
@@ -441,7 +444,8 @@ function(declare,
                               var month = __self.verboseMonthList[i-1];
                               var thisMonth = domConstruct.create('span',
                                                 {id    : domAttr.get(__self.monthListDivDomNode,'id')+'_monthDiv_'+ month, 
-                                                  class : 'monthDiv',
+                                                  class : 'monthDiv monthHasNoEvent deSelectedMonth',
+                                                  title : "This month has no events",
                                                   style : "margin         : 0px 5px 0px 5px; \
                                                           padding        : 1px;             \
                                                           text-align     : center;          \
@@ -467,27 +471,32 @@ function(declare,
                             //__self.setInactiveMonthStyle();
                           }
 
-                          array.forEach(query('.monthDiv'), function(mDiv){
-                            for(var mI=0; mI< __self.selectedYear.eventSet.length; mI++){
-                              if(__self.selectedYear.eventSet[mI].event_month == (__self.verboseMonthList.indexOf(mDiv.innerHTML)+1) ) {
-                                console.log("Retrieving the month div event: ")
-                                console.log(__self.selectedYear.eventSet[mI]);
-                                console.log(__self.verboseMonthList.indexOf(mDiv.innerHTML) );
-                                console.log(mDiv);
-                                if( domClass.contains(mDiv,'monthHasNoEvent') ){
-                                  domClass.remove(mDiv,'monthHasNoEvent');
-                                };
-                                domClass.add(mDiv,'monthHasEvent');
-                              }else{
-                                if( domClass.contains(mDiv,'monthHasEvent') ){
-                                  domClass.remove(mDiv,'monthHasEvent');
-                                }
-                                domClass.add(mDiv,'monthHasNoEvent');
-                              }
-                            }  
-                          });
+                        function setEventMonthStyles(){
+                          
+                          __self.selectedYear.eventSet.forEach( function(Y_event){
+                            console.log("Evaluating: ");
+                            console.log(Y_event);
+                            array.forEach(query('.monthDiv'), function(mDiv){
+                              var monthIndex = (__self.verboseMonthList.indexOf(mDiv.innerHTML)+1)
 
-                          on( __self.showYearLineDomNode,'click',__self.onShowYearLineDomNodeClick);
+                              if(Y_event.event_month ==  monthIndex) {
+                                console.log("Retrieving the month div event: ")
+                                console.log("Event Month and monthDiv has been found equal");
+                                
+                                domClass.remove(mDiv,'monthHasNoEvent');
+                                console.log("removed the monthHasNoEvent Class");
+                                domClass.add(mDiv,'monthHasEvent');
+                                console.log("Added the monthHasEvent Class");
+                                domAttr.set(mDiv,{title: "This Month has events, Click to see more"});
+
+                              }
+                            });
+
+                          });
+                        }
+
+                        setEventMonthStyles();
+                        on( __self.showYearLineDomNode,'click',__self.onShowYearLineDomNodeClick);
     },
 
     onShowYearLineDomNodeClick: function(e){
@@ -526,7 +535,15 @@ function(declare,
                 __self.selectedMonth = e.target;
 
                 __self.setInactiveMonthStyle();
-                domStyle.set( dom.byId(e.target),{background:'navy',color: 'white'});
+
+                array.forEach(query('.selectedMonth'),function(node){
+                  domClass.remove(node, 'selectedMonth');
+                  domClass.add(node,'deSelectedMonth');
+                });
+
+                domClass.remove(e.target,'deSelectedMonth');
+                domClass.add(e.target,'selectedMonth');
+//                 domStyle.set( dom.byId(e.target),{background:'navy',color: 'white'});
 
                 var year  = __self.selectedYear.innerHTML;
                 var month = array.indexOf(__self.verboseMonthList, 
