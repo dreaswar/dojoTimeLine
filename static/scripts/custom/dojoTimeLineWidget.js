@@ -27,37 +27,42 @@ require([
     "dojox/layout/DragPane" ,
     
     "dojo/store/Memory",
+    
+    "dijit/registry",
+    "dijit/Tooltip",
 
     "dojo/NodeList-data",
     "dojo/NodeList-traverse"
-
 ], 
 function(declare, 
-          dom, 
-          domConstruct, 
-          domClass, 
-          ready, 
-          win, 
-          domStyle,
-          domAttr,
-          domGeom,
-          Win,
-          on,
-          query,
-          array,
-          dojoDate,
-          fx,
-          baseFx,
+        dom, 
+        domConstruct, 
+        domClass, 
+        ready, 
+        win, 
+        domStyle,
+        domAttr,
+        domGeom,
+        Win,
+        on,
+        query,
+        array,
+        dojoDate,
+        fx,
+        baseFx,
 
-          xhr    ,
-          request,
-          JSON   ,
+        xhr    ,
+        request,
+        JSON   ,
 
-         _WidgetBase,
-         _TemplatedMixin,
+        _WidgetBase,
+        _TemplatedMixin,
 
-         DragPane,
-         Memory){
+        DragPane,
+        Memory,
+        
+        registry,
+        Tooltip ){
 
     declare("dojoTimeLineWidget", [_WidgetBase], {
 
@@ -375,8 +380,8 @@ function(declare,
 
                           __self.selectedYear.eventSet = __self.eventStore.query({event_year: e.target.innerHTML });
 
-                          console.log("Listing the Memory Store query for the Year: ");
-                          console.log(__self.selectedYear.eventSet);
+//                           console.log("Listing the Memory Store query for the Year: ");
+//                           console.log(__self.selectedYear.eventSet);
                           
                           if( !__self.selectedYearDomNode){
                             __self.selectedYearDomNode = domConstruct.create('div',
@@ -445,7 +450,6 @@ function(declare,
                               var thisMonth = domConstruct.create('span',
                                                 {id    : domAttr.get(__self.monthListDivDomNode,'id')+'_monthDiv_'+ month, 
                                                   class : 'monthDiv monthHasNoEvent deSelectedMonth',
-                                                  title : "This month has no events",
                                                   style : "margin         : 0px 5px 0px 5px; \
                                                           padding        : 1px;             \
                                                           text-align     : center;          \
@@ -456,38 +460,31 @@ function(declare,
                                                 },
                                                 __self.monthListDivDomNode,
                                               'last');
+                              new Tooltip({connectId:[thisMonth], label:"This month has no events"})
                            }
 
                           on(query('.monthDiv'),'click',__self.onMonthNodeClick);
 
                           }
-                          
+
                           if( !__self.monthListDivDomNode ){
                                 createMonthListDiv();
                           }else{
                             domConstruct.destroy(__self.monthListDivDomNode);
                             createMonthListDiv();
-                            //domStyle.set(__self.monthListDivDomNode,{display:'block'});
-                            //__self.setInactiveMonthStyle();
                           }
 
                         function setEventMonthStyles(){
-                          
+
                           __self.selectedYear.eventSet.forEach( function(Y_event){
-                            console.log("Evaluating: ");
-                            console.log(Y_event);
+
                             array.forEach(query('.monthDiv'), function(mDiv){
                               var monthIndex = (__self.verboseMonthList.indexOf(mDiv.innerHTML)+1)
 
                               if(Y_event.event_month ==  monthIndex) {
-                                console.log("Retrieving the month div event: ")
-                                console.log("Event Month and monthDiv has been found equal");
-                                
                                 domClass.remove(mDiv,'monthHasNoEvent');
-                                console.log("removed the monthHasNoEvent Class");
                                 domClass.add(mDiv,'monthHasEvent');
-                                console.log("Added the monthHasEvent Class");
-                                domAttr.set(mDiv,{title: "This Month has events, Click to see more"});
+                                new Tooltip({connectId:[mDiv], label: "This Month has events, Click to see more"});
 
                               }
                             });
@@ -535,6 +532,10 @@ function(declare,
                 __self.selectedMonth = e.target;
 
                 __self.setInactiveMonthStyle();
+
+                __self.selectedMonth.eventSet = __self.eventStore.query({event_day: e.target.innerHTML });
+                
+                console.log(__self.selectedMonth.eventSet);
 
                 array.forEach(query('.selectedMonth'),function(node){
                   domClass.remove(node, 'selectedMonth');
