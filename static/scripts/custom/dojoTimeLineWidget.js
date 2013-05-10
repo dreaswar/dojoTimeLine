@@ -376,8 +376,8 @@ function(declare,
                           }
 
                           domStyle.set(e.target,{background:'lightblue'});
-                          __self.selectedYear = e.target;
-
+                          __self.selectedYear          = e.target;
+                          __self.selectedYear.year     = e.target.innerHTML;
                           __self.selectedYear.eventSet = __self.eventStore.query({event_year: e.target.innerHTML });
 
 //                           console.log("Listing the Memory Store query for the Year: ");
@@ -529,13 +529,16 @@ function(declare,
                   return this.charAt(0).toUpperCase() + this.slice(1);
                 }
 
-                __self.selectedMonth = e.target;
+                
+                __self.selectedMonth            = e.target;
+                __self.selectedMonth.month      = e.target.innerHTML;
+                __self.selectedMonth.monthIndex = __self.verboseMonthList.indexOf(e.target.innerHTML)+1
 
                 __self.setInactiveMonthStyle();
 
-                __self.selectedMonth.eventSet = __self.eventStore.query({event_day: e.target.innerHTML });
-                
-                console.log(__self.selectedMonth.eventSet);
+                __self.selectedMonth.eventSet = __self.eventStore.query({event_year  : __self.selectedYear.year,
+                                                                         event_month : __self.verboseMonthList.indexOf(e.target.innerHTML)+1 
+                                                                        });
 
                 array.forEach(query('.selectedMonth'),function(node){
                   domClass.remove(node, 'selectedMonth');
@@ -544,7 +547,6 @@ function(declare,
 
                 domClass.remove(e.target,'deSelectedMonth');
                 domClass.add(e.target,'selectedMonth');
-//                 domStyle.set( dom.byId(e.target),{background:'navy',color: 'white'});
 
                 var year  = __self.selectedYear.innerHTML;
                 var month = array.indexOf(__self.verboseMonthList, 
@@ -561,7 +563,8 @@ function(declare,
                   domConstruct.destroy(__self.dateContainerDomNode);
                 }
                 __self.dateContainerDomNode = domConstruct.create('div',
-                                                                {style : "height         : 12em;           \
+                                                                {class: "dateContainerDomNode",
+                                                                 style : "height         : 12em;           \
                                                                           position       : relative;       \
                                                                           top            : 0px;            \
                                                                           text-align     : center;         \
@@ -569,7 +572,7 @@ function(declare,
                                                                           display        : block;          \
                                                                           overflow-x     : auto;           \
                                                                           overflow-y     : hidden;         \
-                                                                          margin         : 0 0 -12em 0;  \
+                                                                          margin         : 0 0 -12em 0;    \
                                                                           white-space    : nowrap  ;       \
                                                                           background     : white   ;       \
                                                                           "
@@ -579,28 +582,69 @@ function(declare,
                                               );
 
                 for(var i=1; i <= Number(daysInMonth); i++){
-                  domConstruct.create('div',
-                                    {id        : domAttr.get(__self.domNode,'id')+'_dateContainer_'+i,
-                                    class      : 'dateContainer',
-                                    innerHTML  : i,
-                                    style      : "height         : 20em;              \
-                                                  width          : 1.2em;            \
-                                                  border-right   : solid 1px #ddd;   \
-                                                  margin         : 0px -2px 0px 2px; \
-                                                  padding        : 5.19em 2px 1.1em 2px;\
-                                                  font-family    : Helvetica,Sans-serif,Tahoma,Ubuntu;\
-                                                  font-size      : 1em;              \
-                                                  color          : #aaa;             \
-                                                  display        : inline-block;     \
-                                                  white-space    : nowrap;           \
-                                                  position       : relative;         \
-                                                  top            : -2px;              \
-                                                  overflow-x     : auto;             \
-                                                  "
-                                    },
-                                    __self.dateContainerDomNode,
-                                    'last'
-                  );
+                  var thisDateContainer = domConstruct.create('div',
+                                                              {id        : domAttr.get(__self.domNode,'id')+'_dateContainer_'+i,
+                                                              class      : 'dateContainer',
+                                                              innerHTML  : i,
+                                                              style      : "height         : 20em;                               \
+                                                                            width          : 1.2em;                              \
+                                                                            border-right   : solid 1px #ddd;                     \
+                                                                            margin         : 0px -2px 0px 2px;                   \
+                                                                            padding        : 5.19em 2px 1.1em 2px;               \
+                                                                            font-family    : Helvetica,Sans-serif,Tahoma,Ubuntu; \
+                                                                            font-size      : 1em;                                \
+                                                                            color          : #aaa;                               \
+                                                                            display        : inline-block;                       \
+                                                                            white-space    : nowrap;                             \
+                                                                            position       : relative;                           \
+                                                                            top            : -2px;                               \
+                                                                            overflow-x     : auto;                               \
+                                                                            "
+                                                              },
+                                                              __self.dateContainerDomNode,
+                                                              'last'
+                                          );
+
+                  var dayEvent = __self.eventStore.query({event_year    : __self.selectedYear.year, 
+                                                          event_month : __self.selectedMonth.monthIndex,
+                                                          event_day   : i
+                                                        });
+
+                  console.log(dayEvent);
+
+                  if(dayEvent.length>=1){
+                    console.log("Day event is true: ");
+                    console.log(dayEvent);
+
+                    domClass.add(thisDateContainer, 'dayHasEvent');
+                    domClass.remove(thisDateContainer, 'dayHasNoEvent');
+                    domStyle.set(thisDateContainer, {background:"#EEE", width:"1.5em"});
+
+                    for(var dayEvt=0; dayEvt<dayEvent.length; dayEvt++){
+                      var thisEventIndicator = domConstruct.create('img',
+                                                                  {class      : "dateEventIndicator",
+                                                                  src        : "./static/images/green-icon.png",
+                                                                  style      : "height         : 6px; \
+                                                                                width          : 6px; \
+                                                                                padding        : 5px; \
+                                                                                float          : left; \
+                                                                                display        : block;\
+                                                                                whitespace     : nowrap;\
+                                                                                margin         : 2px; "
+                                                                  },
+                                                                  thisDateContainer,
+                                                                  'last'
+                                              );
+
+                      var formattedEventHTML = "<hr>\n <b>"+ dayEvent[dayEvt].event_date + "</b><hr>\n<br>"  + "Title: \t"  + dayEvent[dayEvt].title + "<br>\nDescription: \t" + dayEvent[dayEvt].description;
+                      new Tooltip({connectId:[thisEventIndicator],label: formattedEventHTML });
+                    }
+                    new Tooltip({connectId:[thisDateContainer],label: "This Day has " + dayEvent.length + " event\s" });
+                  }else{
+                    domClass.add(thisDateContainer, 'dayHasNoEvent');
+                    domClass.remove(thisDateContainer, 'dayHasEvent');
+                    new Tooltip({connectId:[thisDateContainer],label: "No Events for this Date"});
+                  }
                   on(query('.dateContainer'), 'click', __self.onDateNodeClick );
                 }
       },
