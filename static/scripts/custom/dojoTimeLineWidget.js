@@ -196,17 +196,12 @@ function(declare,
       animateOnDateSelect: function(e){
           var dateContainerCount     = query('.dateContainer').length;
 
-          var currentContainerNumber;
+          var closestDateContainer = query(e).closest('.dateContainer')[0];
 
-          var divsBefore = [];
-          var divsAfter  = [];
+          console.log(closestDateContainer);
 
-          function xOfDateContainer(x){
-            return domGeom.position(dom.byId('dateContainer_'+x)).x;
-          }
-
-          var wOfe   = domGeom.position(e).w;
-          var xOfe   = domGeom.position(e).x;
+          var wOfe   = domGeom.position(closestDateContainer).w;
+          var xOfe   = domGeom.position(closestDateContainer).x;
 
           var xOfDojoTimeLine   = domGeom.position(__self.domNode).x;
           var hOfDojoTimeLine   = domGeom.position(__self.domNode).h;      
@@ -216,7 +211,7 @@ function(declare,
           var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).h;
 
           array.forEach(query('.chosenDate'), function(node){
-            if (node != e) {
+            if (node != closestDateContainer) {
               domClass.remove(node, 'chosenDate');
               baseFx.animateProperty({node       : node,
                                       properties : {width: wOfe, background:"white", color:"#aaa"}, 
@@ -224,8 +219,8 @@ function(declare,
                           }).play();
             }
           });
-          domClass.add(e,'chosenDate');
-          baseFx.animateProperty({node     : e,
+          domClass.add(closestDateContainer,'chosenDate');
+          baseFx.animateProperty({node     : closestDateContainer,
                                 properties : {width: wOfe*20 ,background  : "#ffc" , color:"#aaa"}, 
                                 duration   : 800
                           }).play();
@@ -314,7 +309,7 @@ function(declare,
                           domStyle.set(__self.yearLineDragPane,{display   : 'none'});
                           domStyle.set(__self.yearLineDomNode,{display   : 'none'});
                           domStyle.set(__self.domNode,{overflowX : 'hidden'});
-                          domStyle.set(__self.selectedYearDomNode,{width: "99.4%",overflow:'hidden',display:'block'});
+                          domStyle.set(__self.selectedYearDomNode,{display:'block'});
 
                           __self.selectedYearDomNode.innerHTML = e.target.innerHTML;
 
@@ -512,7 +507,7 @@ function(declare,
                     __self.animateOnDateSelect(e.target);
 
                     __self._fetchEventsOnLoad("/dojotimeline/get_events");
-
+/*
                     var chosenDate = new Date(__self.year, __self.month,__self.day);
                     __self.date      = chosenDate;
 
@@ -527,6 +522,7 @@ function(declare,
                     }else{
                         __self.chosenDateDomNode.innerHTML = chosenDate;
                     }
+*/
     },
 
     buildRendering : function(){
