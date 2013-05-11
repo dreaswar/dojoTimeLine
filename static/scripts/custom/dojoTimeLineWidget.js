@@ -112,33 +112,7 @@ function(declare,
           }
         },
 
-      _dummyEvents     : [{ date         : new Date(1,12,2012)    ,
-                              title        : "First Event"          ,
-                              description  : "What an Inauguration" ,
-                              absoluteUrl  : "/"
-                          },
-                          { date         : new Date(1,01,2013)       ,
-                              title        : "Second Event"             ,
-                              description  : "This is the second event" ,
-                              absoluteUrl  : "/"
-                          },
-                          { date         : new Date(1,02,2013)    ,
-                              title        : "Watch !"          ,
-                              description  : "Bought a Fossil watch" ,
-                              absoluteUrl  : "/"
-                          },
-                          { date         : new Date(3,01,2013)    ,
-                              title        : "Twitter handle !"          ,
-                              description  : "Got a twitter handle" ,
-                              absoluteUrl  : "/"
-                          },
-                          { date         : new Date(3,12,2012)    ,
-                              title        : "Bought a House !"          ,
-                              description  : "What an Inauguration" ,
-                              absoluteUrl  : "/"
-                          }
-      ],
-
+/*
       setInactiveMonthStyle: function (){
                               array.forEach(query('.monthDiv'),
                                             function(div){ 
@@ -151,8 +125,9 @@ function(declare,
                                               )
                                             });
       },
+*/
 
-     setYearLine: function (){
+    setYearLine: function (){
                       console.log("Starting the setYearLine Function");
 
                       __self = this;
@@ -291,7 +266,7 @@ function(declare,
             console.log(__self.eventStore);
 
             for(var x=0; x< all_events.length; x++){
-              array.forEach(query('.dojoTimeLineYearLineSpan'), 
+              array.forEach(query('.yearLineSpan'), 
                             function(yearSpan){
                               if(yearSpan.innerHTML == all_events[x].event_year){
                                   domClass.remove(yearSpan,'hasNoEvent');  
@@ -328,9 +303,6 @@ function(declare,
                           __self.selectedYear          = e.target;
                           __self.selectedYear.year     = e.target.innerHTML;
                           __self.selectedYear.eventSet = __self.eventStore.query({event_year: e.target.innerHTML });
-
-//                           console.log("Listing the Memory Store query for the Year: ");
-//                           console.log(__self.selectedYear.eventSet);
                           
                           if( !__self.selectedYearDomNode){
                             __self.selectedYearDomNode = domConstruct.create('div',
@@ -447,7 +419,7 @@ function(declare,
                 __self.selectedMonth.month      = e.target.innerHTML;
                 __self.selectedMonth.monthIndex = __self.verboseMonthList.indexOf(e.target.innerHTML)+1
 
-                __self.setInactiveMonthStyle();
+                 //__self.setInactiveMonthStyle();
 
                 __self.selectedMonth.eventSet = __self.eventStore.query({event_year  : __self.selectedYear.year,
                                                                          event_month : __self.verboseMonthList.indexOf(e.target.innerHTML)+1 
