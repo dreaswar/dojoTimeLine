@@ -87,11 +87,12 @@ function(declare,
                           'November'  ,
                           'December'
                          ],
-
+/*
       nonSelectedStyle : "margin        : 1px 5px 0px 5px ;\
                           padding       : 10px ;           \
                           background    : lightblue;       \
                           border        : 0px 1px 0px 1px; ",
+*/
 
       setTimeLineDateVars: function (){
           this.maxDate    = new Date();
@@ -158,35 +159,14 @@ function(declare,
 
                       this.yearLineDragPane = domConstruct.create('div',
                                                     { id    : domAttr.get(this.domNode,'id')+"_yearLineDragPane",
-                                                      style : "position     : absolute; \
-                                                              top           : 85%;      \
-                                                              height        : 1em;      \
-                                                              font-family   : Helvetica,Sans-serif,Tahoma,Ubuntu;\
-                                                              display       : inline-block; \
-                                                              white-space   : nowrap;       \
-                                                              overflow-x    : hidden;       \
-                                                              overflow-y    : hidden;       \
-                                                              background    : lightblue;    \
-                                                              box-shadow    : 0px 2px 2px #aaa;\
-                                                              opacity       : 0.85;            \
-                                                              margin-bottom : 5px;             \
-                                                              "
+                                                      class : "yearLineDragPane"
                                                     },
                                                     this.domNode,
                                                     'first');
 
                       this.yearLineDomNode = domConstruct.create('div',
                                                     { id    : domAttr.get(this.domNode,'id')+"_yearLine",
-                                                      style : "position   : absolute; \
-                                                              top        : 85%;       \
-                                                              height     : 1em;       \
-                                                              font-family: Helvetica,Sans-serif,Tahoma,Ubuntu;\
-                                                              display    : inline-block;    \
-                                                              background : lightblue;       \
-                                                              box-shadow : 0px 2px 2px #aaa;\
-                                                              opacity    : 0.85;            \
-                                                              margin-bottom: 5px;           \
-                                                              "
+                                                      class : 'yearLineDomNode'
                                                     },
                                                     this.yearLineDragPane,
                                                     'after');
@@ -196,8 +176,7 @@ function(declare,
 
                         var yearNode = domConstruct.create('span',
                                             {id    : yearToInsert, 
-                                            class : 'dojoTimeLineYearLineSpan',
-                                            style : this.nonSelectedStyle
+                                            class : 'yearLineSpan'
                                             },
                                             this.yearLineDomNode,
                                             'last'
@@ -311,27 +290,12 @@ function(declare,
 
             console.log(__self.eventStore);
 
-            //query('.hasEvent').removeData();
-
             for(var x=0; x< all_events.length; x++){
               array.forEach(query('.dojoTimeLineYearLineSpan'), 
                             function(yearSpan){
                               if(yearSpan.innerHTML == all_events[x].event_year){
                                   domClass.remove(yearSpan,'hasNoEvent');  
                                   domClass.add(yearSpan,'hasEvent');
-/*
-                                  __self.eventStore.
-                                        query({ event_year: new Number(yearSpan.innerHTML) }, 
-                                              { sort:[{ attribute  :"event_year", 
-                                                      descending : true
-                                                      }
-                                                    ]
-                                              }
-                                        ).forEach(function(evtStoreItem){
-                                                      query('.hasEvent').data({dateObj:evtStoreItem.dateObj})
-                                          });
-                                          console.log(query('.hasEvent').data('dateObj'));
-*/
                                   if (domStyle.get(yearSpan,'display') == 'none'){
                                     domStyle.set(yearSpan,'display','inline');
                                   }
@@ -342,21 +306,6 @@ function(declare,
                               }
               });
             }
-
-            /*
-            domConstruct.create('div',
-                                {innerHTML : date_array, 
-                                style     : "position   : relative; \
-                                              top        : 100px   ; \
-                                              left       : 20px    ; \
-                                              border     : solid 1px lightblue; \
-                                              background : lightgoldenrodyellow;\
-                                              max-width  : 80%;                 \
-                                            "
-                                }, 
-                                dom.byId('addEventFormDiv'), 
-                                'after');
-            */
           }, 
           function(error){
             console.log("Error! Server is not accesible\nError Returned is: " + error);
@@ -385,22 +334,7 @@ function(declare,
                           
                           if( !__self.selectedYearDomNode){
                             __self.selectedYearDomNode = domConstruct.create('div',
-                                                                            { style : "white-space    : nowrap;          \
-                                                                                      overflow-x     : auto;             \
-                                                                                      overflow-y     : visible;          \
-                                                                                      display        : inline-block      \
-                                                                                      height         : 1em;              \
-                                                                                      margin         : 1px 0px 3px 1px;  \
-                                                                                      padding        : 2px;              \
-                                                                                      background     : lightblue;        \
-                                                                                      box-shadow     : -1px 2px 3px #aaa;\
-                                                                                      text-align     : center;           \
-                                                                                      vertical-align : middle;           \
-                                                                                      position       : relative;         \
-                                                                                      top            : 80%;              \
-                                                                                      opacity        : 0.7;              \
-                                                                                      left           : 0px; "
-                                                                          },
+                                                                            { class : 'selectedYearDomNode'},
                                                                           __self.yearLineDomNode,
                                                                           'before');
                           }
@@ -412,34 +346,19 @@ function(declare,
 
                           __self.selectedYearDomNode.innerHTML = e.target.innerHTML;
 
-                          __self.showYearLineDomNode = domConstruct.create('img',{src    : 'static/images/arrow_down.png',
-                                                                                width  : '12px', 
-                                                                                alt    : 'Show Years',
-                                                                                title  : 'Show Years',
-                                                                                height : '12px',
-                                                                                margin : '2px'
-                                                                                },
-                                                                            __self.selectedYearDomNode,
-                                                                          'last');
+                          var showYearLineDomNode = __self.showYearLineDomNode = domConstruct.create('img',
+                                                                                                     {class:"showYearLineDomNode",
+                                                                                                      src    : 'static/images/arrow_down.png',
+                                                                                                      alt    : 'Show Years',
+                                                                                                      },
+                                                                                                  __self.selectedYearDomNode,
+                                                                                                'last');
+
+                          new Tooltip({connectId:[showYearLineDomNode], label: "Show Year Line selector"})
 
                           function createMonthListDiv(){
                               __self.monthListDivDomNode= domConstruct.create('div',
-                                                                          {style : "height          : 0.9em;             \
-                                                                                    margin          : 1px 0px 1px 0px;   \
-                                                                                    padding         : 0px 0px 6px 0px;   \
-                                                                                    background      : lightgoldenrodyellow;\
-                                                                                    box-shadow      : -1px 2px 3px #aaa; \
-                                                                                    text-align      : center;            \
-                                                                                    vertical-align  : middle;            \
-                                                                                    position        : relative;          \
-                                                                                    top             : 80%;               \
-                                                                                    white-space     : nowrap;            \
-                                                                                    opacity         : .7 ;               \
-                                                                                    display         : inline-block       \
-                                                                                    overflow-x      : auto;              \
-                                                                                    overflow-y      : visible;            \
-                                                                                    left            : 0px; "
-                                                                          },
+                                                                          {class: "monthListDivDomNode"},
                                                                           __self.selectedYearDomNode,
                                                                         'before');
 
@@ -449,14 +368,8 @@ function(declare,
                               var month = __self.verboseMonthList[i-1];
                               var thisMonth = domConstruct.create('span',
                                                 {id    : domAttr.get(__self.monthListDivDomNode,'id')+'_monthDiv_'+ month, 
-                                                  class : 'monthDiv monthHasNoEvent deSelectedMonth',
-                                                  style : "margin         : 0px 5px 0px 5px; \
-                                                          padding        : 1px;             \
-                                                          text-align     : center;          \
-                                                          vertical-align : middle;          \
-                                                          font-family    : Helvetica,sans-serif, Tahoma, Ubuntu; \
-                                                          font-size      : 10px;",
-                                                innerHTML : month
+                                                 class : 'monthDiv monthHasNoEvent deSelectedMonth',
+                                                 innerHTML : month
                                                 },
                                                 __self.monthListDivDomNode,
                                               'last');
@@ -563,19 +476,7 @@ function(declare,
                   domConstruct.destroy(__self.dateContainerDomNode);
                 }
                 __self.dateContainerDomNode = domConstruct.create('div',
-                                                                {class: "dateContainerDomNode",
-                                                                 style : "height         : 12em;           \
-                                                                          position       : relative;       \
-                                                                          top            : 0px;            \
-                                                                          text-align     : center;         \
-                                                                          vertical-align : middle;         \
-                                                                          display        : block;          \
-                                                                          overflow-x     : auto;           \
-                                                                          overflow-y     : hidden;         \
-                                                                          margin         : 0 0 -12em 0;    \
-                                                                          white-space    : nowrap  ;       \
-                                                                          background     : white   ;       \
-                                                                          "
+                                                                {class: "dateContainerDomNode"
                                                                 },
                                                                 __self.domNode,
                                                                 0
@@ -585,21 +486,7 @@ function(declare,
                   var thisDateContainer = domConstruct.create('div',
                                                               {id        : domAttr.get(__self.domNode,'id')+'_dateContainer_'+i,
                                                               class      : 'dateContainer',
-                                                              innerHTML  : i,
-                                                              style      : "height         : 20em;                               \
-                                                                            width          : 1.2em;                              \
-                                                                            border-right   : solid 1px #ddd;                     \
-                                                                            margin         : 0px -2px 0px 2px;                   \
-                                                                            padding        : 5.19em 2px 1.1em 2px;               \
-                                                                            font-family    : Helvetica,Sans-serif,Tahoma,Ubuntu; \
-                                                                            font-size      : 1em;                                \
-                                                                            color          : #aaa;                               \
-                                                                            display        : inline-block;                       \
-                                                                            white-space    : nowrap;                             \
-                                                                            position       : relative;                           \
-                                                                            top            : -2px;                               \
-                                                                            overflow-x     : auto;                               \
-                                                                            "
+                                                              innerHTML  : i
                                                               },
                                                               __self.dateContainerDomNode,
                                                               'last'
@@ -623,14 +510,7 @@ function(declare,
                     for(var dayEvt=0; dayEvt<dayEvent.length; dayEvt++){
                       var thisEventIndicator = domConstruct.create('img',
                                                                   {class      : "dateEventIndicator",
-                                                                  src        : "./static/images/green-icon.png",
-                                                                  style      : "height         : 6px; \
-                                                                                width          : 6px; \
-                                                                                padding        : 5px; \
-                                                                                float          : left; \
-                                                                                display        : block;\
-                                                                                whitespace     : nowrap;\
-                                                                                margin         : 2px; "
+                                                                  src        : "./static/images/green-icon.png"
                                                                   },
                                                                   thisDateContainer,
                                                                   'last'
@@ -671,16 +551,7 @@ function(declare,
                     if(!__self.chosenDateDomNode){
                         __self.chosenDateDomNode = domConstruct.create('div',
                                                                       {innerHTML : chosenDate,
-                                                                      style     : 'margin      : 1px;       \
-                                                                                  width       : 500px;      \
-                                                                                  position    : relative;  \
-                                                                                  top         : 10px;       \
-                                                                                  left        : 0em;       \
-                                                                                  font-family : Helvetica,Sans-serif,Tahoma,Ubuntu;\
-                                                                                  font-size   : 12px;                              \
-                                                                                  color       : #aaa;                              \
-                                                                                  display     : none;                      \
-                                                                                  '
+                                                                       class     : 'chosenDate'
                                                                       },
                                                                       __self.domNode,
                                                                       'after'
