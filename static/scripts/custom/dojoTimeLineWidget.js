@@ -329,18 +329,17 @@ function(declare,
                           new Tooltip({connectId:[showYearLineDomNode], label: "Show Year Line selector"})
 
                           function createMonthListDiv(){
-                              __self.monthListDivDomNode= domConstruct.create('div',
-                                                                          {class: "monthListDivDomNode"},
-                                                                          __self.selectedYearDomNode,
-                                                                        'before');
+                              __self.monthListDivDomNode= domConstruct.create('div',{class: "monthListDivDomNode"},
+                                                                              __self.selectedYearDomNode,
+                                                                              'before');
 
                             var monthListHtml = '';
 
                             for(var i=1; i< __self.verboseMonthList.length; i++){
                               var month = __self.verboseMonthList[i-1];
                               var thisMonth = domConstruct.create('span',
-                                                {id    : domAttr.get(__self.monthListDivDomNode,'id')+'_monthDiv_'+ month, 
-                                                 class : 'monthDiv monthHasNoEvent deSelectedMonth',
+                                                {id        : domAttr.get(__self.monthListDivDomNode,'id')+'_monthDiv_'+ month, 
+                                                 class     : 'monthDiv monthHasNoEvent deSelectedMonth',
                                                  innerHTML : month
                                                 },
                                                 __self.monthListDivDomNode,
@@ -414,7 +413,6 @@ function(declare,
                   return this.charAt(0).toUpperCase() + this.slice(1);
                 }
 
-                
                 __self.selectedMonth            = e.target;
                 __self.selectedMonth.month      = e.target.innerHTML;
                 __self.selectedMonth.monthIndex = __self.verboseMonthList.indexOf(e.target.innerHTML)+1
@@ -447,9 +445,7 @@ function(declare,
                 if(__self.dateContainerDomNode){
                   domConstruct.destroy(__self.dateContainerDomNode);
                 }
-                __self.dateContainerDomNode = domConstruct.create('div',
-                                                                {class: "dateContainerDomNode"
-                                                                },
+                __self.dateContainerDomNode = domConstruct.create('div',{class: "dateContainerDomNode"},
                                                                 __self.domNode,
                                                                 0
                                               );
@@ -464,7 +460,7 @@ function(declare,
                                                               'last'
                                           );
 
-                  var dayEvent = __self.eventStore.query({event_year    : __self.selectedYear.year, 
+                  var dayEvent = __self.eventStore.query({event_year  : __self.selectedYear.year, 
                                                           event_month : __self.selectedMonth.monthIndex,
                                                           event_day   : i
                                                         });
