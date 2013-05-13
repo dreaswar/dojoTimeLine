@@ -329,7 +329,7 @@ function(declare,
                                                                               'before');
                             var monthListHtml = '';
 
-                            for(var i=1; i< __self.verboseMonthList.length; i++){
+                            for(var i=1; i<=__self.verboseMonthList.length; i++){
                               var month = __self.verboseMonthList[i-1];
                               var thisMonth = domConstruct.create('span',
                                                 {id        : domAttr.get(__self.monthListDivDomNode,'id')+'_monthDiv_'+ month, 
