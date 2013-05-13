@@ -194,36 +194,35 @@ function(declare,
       },
 
       animateOnDateSelect: function(e){
-          var dateContainerCount     = query('.dateContainer').length;
 
+          var dateContainerCount     = query('.dateContainer').length;
           var closestDateContainer = query(e).closest('.dateContainer')[0];
 
-          console.log(closestDateContainer);
 
-          var wOfe   = domGeom.position(closestDateContainer).w;
-          var xOfe   = domGeom.position(closestDateContainer).x;
+          var notExpElem      = query(".dateContainer.isNotExpanded")[0];
+          var wOfNonExpElem   = domGeom.position(notExpElem).w;
+          var xOfNonExpElem   = domGeom.position(notExpElem).x;
 
-          var xOfDojoTimeLine   = domGeom.position(__self.domNode).x;
-          var hOfDojoTimeLine   = domGeom.position(__self.domNode).h;      
-          var wOfDojoTimeLine   = domGeom.position(__self.domNode).w;
-
-          var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).w;
-          var hOfselectedYear  = domGeom.position(__self.selectedYearDomNode).h;
-
-          array.forEach(query('.chosenDate'), function(node){
+          array.forEach(query('.chosenDate.isExpanded'), function(node){
             if (node != closestDateContainer) {
               domClass.remove(node, 'chosenDate');
+              domClass.remove(node, 'isExpanded');
+              domClass.add(node, 'isNotExpanded');
               baseFx.animateProperty({node       : node,
-                                      properties : {width: wOfe, background:"white", color:"#aaa"}, 
+                                      properties : {width: wOfNonExpElem, background:"white", color:"#aaa"}, 
                                       duration   : 800
                           }).play();
             }
           });
-          domClass.add(closestDateContainer,'chosenDate');
-          baseFx.animateProperty({node     : closestDateContainer,
-                                properties : {width: wOfe*20 ,background  : "#ffc" , color:"#aaa"}, 
-                                duration   : 800
-                          }).play();
+
+          if(!domClass.contains(closestDateContainer,'isExpanded')){
+            baseFx.animateProperty({node     : closestDateContainer,
+                                  properties : {width: wOfNonExpElem*20 ,background  : "#ffc" , color:"#aaa"}, 
+                                  duration   : 800
+                            }).play();
+            domClass.add(closestDateContainer,"chosenDate isExpanded");
+            domClass.remove(closestDateContainer,"isNotExpanded");
+          }
       },
 
       _fetchEventsOnLoad : function(url){
@@ -448,7 +447,7 @@ function(declare,
                 for(var i=1; i <= Number(daysInMonth); i++){
                   var thisDateContainer = domConstruct.create('div',
                                                               {id        : domAttr.get(__self.domNode,'id')+'_dateContainer_'+i,
-                                                              class      : 'dateContainer',
+                                                              class      : 'dateContainer isNotExpanded',
                                                               innerHTML  : i
                                                               },
                                                               __self.dateContainerDomNode,
