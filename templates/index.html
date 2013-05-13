@@ -28,7 +28,7 @@
             width         : 85%;
             height        : 15em;
             overflow-y    : hidden;
-            overflow-x    : auto;
+            overflow-x    : hidden;
             cursor        : pointer;
             margin-bottom : 2%;
             margin-left   : 2%;
@@ -273,6 +273,7 @@
                        "dojo/dom-attr",
                        "dojo/ready",
                        "dijit/registry",
+                       "dojox/layout/DragPane",
 
                        "dijit/layout/BorderContainer", 
                        "dijit/layout/TabContainer", 
@@ -285,12 +286,14 @@
                        "dijit/Dialog",
 
                        'dojo/domReady!'],
-              function(dojoTimeLineWidget, parser, dom,on,JSON, request, domForm, domAttr, ready, registry){
+              function(dojoTimeLineWidget, parser, dom,on,JSON, request, domForm, domAttr, ready, registry, DragPane){
 
               ready(function(){
 
                 //Runs the dojoTimeLine....
                 console.log(dojoTimeLineWidget);
+
+                new DragPane({invert:true},'dojoTimeLineWidgetContainer').startup();
 
                 on(dom.byId('addEventForm'), 'submit',function(e){
                    e.preventDefault();

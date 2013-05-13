@@ -108,7 +108,11 @@ def get_events():
                    event_date  = row[3].replace(' ',''), 
                    event_year  = int( row[3].split('-')[0].strip() ), 
                    event_month = int( row[3].split('-')[1].strip() ),
-                   event_day   = int( row[3].split('-')[2].strip() )
+                   event_day   = int( row[3].split('-')[2].strip() ),
+                   formattedEventHTML = "<hr>\n <b>"+ row[3].replace(' ','') + \
+                                        "</b><hr>\n<br>"  + "Title: \t"      + \
+                                          row[1].strip()  + "<br>\nDescription: \t" +\
+                                          row[2].strip()
                   );
       print event
       all_events.append(event)

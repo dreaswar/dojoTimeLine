@@ -284,6 +284,7 @@ function(declare,
       
       _fetchEventsOnUpdate: function(){
         // This is called on a update on a data elsewhere so that the timeline updates itself
+        // #TODO
       },
 
       onYearNodeClick: function(e){
@@ -471,7 +472,7 @@ function(declare,
 
                     for(var dayEvt=0; dayEvt<dayEvent.length; dayEvt++){
                       var thisEventIndicator = domConstruct.create('img',
-                                                                  {class      : "dateEventIndicator",
+                                                                  {class     : "dateEventIndicator",
                                                                   src        : "./static/images/green-icon.png"
                                                                   },
                                                                   thisDateContainer,
