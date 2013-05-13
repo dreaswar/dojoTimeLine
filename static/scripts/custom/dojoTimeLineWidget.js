@@ -327,7 +327,6 @@ function(declare,
                               __self.monthListDivDomNode= domConstruct.create('div',{class: "monthListDivDomNode"},
                                                                               __self.selectedYearDomNode,
                                                                               'before');
-
                             var monthListHtml = '';
 
                             for(var i=1; i< __self.verboseMonthList.length; i++){
@@ -440,11 +439,14 @@ function(declare,
                 if(__self.dateContainerDomNode){
                   domConstruct.destroy(__self.dateContainerDomNode);
                 }
-                __self.dateContainerDomNode = domConstruct.create('div',{class: "dateContainerDomNode"},
+                __self.dateContainerDomNode = domConstruct.create('div',{class: "dateContainerDomNode", 
+                                                                         style:"overflow:hidden;"},
                                                                 __self.domNode,
                                                                 0
                                               );
 
+                new DragPane({invert:true},__self.dateContainerDomNode).startup();
+                
                 for(var i=1; i <= Number(daysInMonth); i++){
                   var thisDateContainer = domConstruct.create('div',
                                                               {id        : domAttr.get(__self.domNode,'id')+'_dateContainer_'+i,
